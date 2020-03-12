@@ -1,21 +1,20 @@
 /***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
-* 
+*
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; under version 2
 * of the License.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 ****************************************************************/
 
-using System;
-using System.Collections.Generic;
 using HL7Lib.Base;
+using System.Collections.Generic;
 
 namespace HL7Lib.Segments
 {
@@ -38,6 +37,7 @@ namespace HL7Lib.Segments
             fs.Add(BLC2());
             Fields = fs;
         }
+
         private Field BLC1()
         {
             Field f = new Field("Blood Product Code");
@@ -51,6 +51,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BLC2()
         {
             Field f = new Field("Blood Amount");

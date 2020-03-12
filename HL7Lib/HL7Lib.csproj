@@ -12,7 +12,13 @@
     <AssemblyName>HL7Lib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <RunNuGetPack>True</RunNuGetPack>
+    <IncludeBuildVersion>True</IncludeBuildVersion>
+    <FileExclusionPattern>*.CodeAnalysisLog.xml;*.lastcodeanalysissucceeded;*Test*.*;*.pdb</FileExclusionPattern>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -214,6 +220,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HL7Lib.nuspec" />
     <None Include="Resources\Boy Names.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +231,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Address Names.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

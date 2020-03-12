@@ -1,21 +1,20 @@
 /***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
-* 
+*
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; under version 2
 * of the License.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 ****************************************************************/
 
-using System;
-using System.Collections.Generic;
 using HL7Lib.Base;
+using System.Collections.Generic;
 
 namespace HL7Lib.Segments
 {
@@ -61,6 +60,7 @@ namespace HL7Lib.Segments
             fs.Add(ARQ25());
             Fields = fs;
         }
+
         private Field ARQ1()
         {
             Field f = new Field("Placer Appointment ID");
@@ -72,6 +72,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ2()
         {
             Field f = new Field("Filler Appointment ID");
@@ -83,6 +84,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ3()
         {
             Field f = new Field("Occurrence Number");
@@ -91,6 +93,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ4()
         {
             Field f = new Field("Placer Group Number");
@@ -102,6 +105,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ5()
         {
             Field f = new Field("Schedule ID");
@@ -115,6 +119,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ6()
         {
             Field f = new Field("Request Event Reason");
@@ -128,6 +133,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ7()
         {
             Field f = new Field("Appointment Reason");
@@ -141,6 +147,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ8()
         {
             Field f = new Field("Appointment Type");
@@ -154,6 +161,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ9()
         {
             Field f = new Field("Appointment Duration");
@@ -162,6 +170,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ10()
         {
             Field f = new Field("Appointment Duration Units");
@@ -175,6 +184,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ11()
         {
             Field f = new Field("Requested Start Date/Time Range");
@@ -184,6 +194,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ12()
         {
             Field f = new Field("Priority-ARQ");
@@ -192,6 +203,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ13()
         {
             Field f = new Field("Repeating Interval");
@@ -201,6 +213,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ14()
         {
             Field f = new Field("Repeating Interval Duration");
@@ -209,6 +222,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ15()
         {
             Field f = new Field("Placer Contact Person");
@@ -239,6 +253,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ16()
         {
             Field f = new Field("Placer Contact Phone Number");
@@ -258,6 +273,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ17()
         {
             Field f = new Field("Placer Contact Address");
@@ -279,6 +295,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ18()
         {
             Field f = new Field("Placer Contact Location");
@@ -297,6 +314,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ19()
         {
             Field f = new Field("Entered By Person");
@@ -327,6 +345,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ20()
         {
             Field f = new Field("Entered By Phone Number");
@@ -346,6 +365,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ21()
         {
             Field f = new Field("Entered By Location");
@@ -364,6 +384,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ22()
         {
             Field f = new Field("Parent Placer Appointment ID");
@@ -375,6 +396,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ23()
         {
             Field f = new Field("Parent Filler Appointment ID");
@@ -386,6 +408,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ24()
         {
             Field f = new Field("Placer Order Number");
@@ -397,6 +420,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field ARQ25()
         {
             Field f = new Field("Filler Order Number");

@@ -1,21 +1,20 @@
 /***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
-* 
+*
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; under version 2
 * of the License.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 ****************************************************************/
 
-using System;
-using System.Collections.Generic;
 using HL7Lib.Base;
+using System.Collections.Generic;
 
 namespace HL7Lib.Segments
 {
@@ -48,6 +47,7 @@ namespace HL7Lib.Segments
             fs.Add(BHS12());
             Fields = fs;
         }
+
         private Field BHS1()
         {
             Field f = new Field("Batch Field Separator");
@@ -56,6 +56,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS2()
         {
             Field f = new Field("Batch Encoding Characters");
@@ -64,6 +65,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS3()
         {
             Field f = new Field("Batch Sending Application");
@@ -74,6 +76,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS4()
         {
             Field f = new Field("Batch Sending Facility");
@@ -84,6 +87,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS5()
         {
             Field f = new Field("Batch Receiving Application");
@@ -94,6 +98,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS6()
         {
             Field f = new Field("Batch Receiving Facility");
@@ -104,6 +109,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS7()
         {
             Field f = new Field("Batch Creation Date/Time");
@@ -113,6 +119,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS8()
         {
             Field f = new Field("Batch Security");
@@ -121,6 +128,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS9()
         {
             Field f = new Field("Batch Name/ID/Type");
@@ -129,6 +137,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS10()
         {
             Field f = new Field("Batch Comment");
@@ -137,6 +146,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS11()
         {
             Field f = new Field("Batch Control ID");
@@ -145,6 +155,7 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
+
         private Field BHS12()
         {
             Field f = new Field("Reference Batch Control ID");
