@@ -1,12 +1,12 @@
 /***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
-* 
+*
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; under version 2
 * of the License.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace HL7Lib.Base
 {
@@ -29,6 +28,7 @@ namespace HL7Lib.Base
         private string FRSeperator = "~";
         private string SCSeperator = "&";
         private string ECharacter = "\\";
+
         /// <summary>
         /// HL7 Message Field Seperator String
         /// </summary>
@@ -37,6 +37,7 @@ namespace HL7Lib.Base
             get { return FSeperator; }
             set { FSeperator = value; }
         }
+
         /// <summary>
         /// HL7 Message Component Seperator String
         /// </summary>
@@ -45,6 +46,7 @@ namespace HL7Lib.Base
             get { return CSeperator; }
             set { CSeperator = value; }
         }
+
         /// <summary>
         /// HL7 Message SubComponent Seperator String
         /// </summary>
@@ -53,6 +55,7 @@ namespace HL7Lib.Base
             get { return SCSeperator; }
             set { SCSeperator = value; }
         }
+
         /// <summary>
         /// HL7 Message Repeating Field Seperator String
         /// </summary>
@@ -61,6 +64,7 @@ namespace HL7Lib.Base
             get { return FRSeperator; }
             set { FRSeperator = value; }
         }
+
         /// <summary>
         /// HL7 Message Escape Character Seperator String
         /// </summary>
@@ -69,22 +73,27 @@ namespace HL7Lib.Base
             get { return ECharacter; }
             set { ECharacter = value; }
         }
+
         /// <summary>
         /// List of Segments in the HL7 message
         /// </summary>
         public List<Segment> Segments { get; set; }
+
         /// <summary>
         /// List of Segment names in HL7 message
         /// </summary>
         public List<string> SegmentNames { get; set; }
+
         /// <summary>
         /// The HL7 message string formatted for display
         /// </summary>
         public string DisplayString { get; set; }
+
         /// <summary>
         /// Empty Constructor
         /// </summary>
         public Message() { }
+
         /// <summary>
         /// Constructs an HL7 message from an HL7 message string
         /// </summary>
@@ -95,6 +104,7 @@ namespace HL7Lib.Base
             SegmentNames = new List<string>();
             Parse(HL7Message);
         }
+
         /// <summary>
         /// Parses the HL7 message string and creates a list of segments from it
         /// </summary>
@@ -126,6 +136,7 @@ namespace HL7Lib.Base
                 }
             }
         }
+
         /// <summary>
         /// Sets the Fields of a single segment
         /// </summary>
@@ -153,6 +164,7 @@ namespace HL7Lib.Base
             }
             SetSegment(SegmentName, l);
         }
+
         /// <summary>
         /// Calls one of the Parse HL7 Segment Methods based on the Segment Name
         /// </summary>
@@ -314,6 +326,7 @@ namespace HL7Lib.Base
                 default: Segments.Add(ParseCustom(l, SegmentName)); break;
             }
         }
+
         /// <summary>
         /// Sets the segment name of the specified segment
         /// </summary>
@@ -328,6 +341,7 @@ namespace HL7Lib.Base
         }
 
         #region Parse HL7 Segment Methods
+
         /// <summary>
         /// Parses a custom (Z) segment from the message string
         /// </summary>
@@ -373,6 +387,7 @@ namespace HL7Lib.Base
             s.Fields = fields;
             return s;
         }
+
         /// <summary>
         /// Parses a standard segment, this is the main processing method for most segments
         /// </summary>
@@ -382,14 +397,15 @@ namespace HL7Lib.Base
         private Segment ParseStandard(List<ParseField> HL7Segment, Base.Segments seg)
         {
             Segment s = new Segment(seg);
-            List<ParseField> standardFields = HL7Segment.FindAll(delegate(ParseField f) { return f.RepeatedField == false; });
-            List<ParseField> repeatedFields = HL7Segment.FindAll(delegate(ParseField f) { return f.RepeatedField == true; });
+            List<ParseField> standardFields = HL7Segment.FindAll(delegate (ParseField f) { return f.RepeatedField == false; });
+            List<ParseField> repeatedFields = HL7Segment.FindAll(delegate (ParseField f) { return f.RepeatedField == true; });
             if (standardFields.Count > 0)
                 AddStandard(standardFields, s);
             if (repeatedFields.Count > 0)
                 AddRepeated(repeatedFields, s);
             return s;
         }
+
         /// <summary>
         /// Parses an MSH segment from the message string
         /// </summary>
@@ -398,13 +414,14 @@ namespace HL7Lib.Base
         private Segment ParseMSH(List<ParseField> HL7Segment)
         {
             Segment s = new Segment(Base.Segments.MSH);
-            List<ParseField> standardFields = HL7Segment.FindAll(delegate(ParseField f) { return f.RepeatedField == false; });
+            List<ParseField> standardFields = HL7Segment.FindAll(delegate (ParseField f) { return f.RepeatedField == false; });
             if (standardFields.Count > 0)
                 AddStandard(standardFields, s);
             s.Fields[1].Components[0].Value = "|";
             s.Fields[2].Components[0].Value = CSeperator + FRSeperator + ECharacter + SCSeperator;
             return s;
         }
+
         /// <summary>
         /// Adds a standard field and component to the specified segment
         /// </summary>
@@ -414,6 +431,11 @@ namespace HL7Lib.Base
         {
             foreach (ParseField field in standardFields)
             {
+                var components = s.Fields[field.FieldIndex].Components;
+                for (int i = 0; i < field.FieldValues.Count - components.Count; ++i)
+                {
+                    components.Add(new Component());
+                }
                 foreach (ParseComponent component in field.FieldValues)
                 {
                     try
@@ -426,6 +448,7 @@ namespace HL7Lib.Base
                 }
             }
         }
+
         /// <summary>
         /// Adds a repeated field and component to the specified segment
         /// </summary>
@@ -435,18 +458,20 @@ namespace HL7Lib.Base
         {
             try
             {
-                repeatedFields.Sort();
                 foreach (ParseField field in repeatedFields)
                 {
                     Field f = new Field(s.Fields[field.FieldIndex].Name);
+                    var baseComponent = s.Fields[field.FieldIndex].Components[0];
                     f.Components = new List<Component>();
-                    foreach (Component segCom in s.Fields[field.FieldIndex].Components)
+
+                    foreach (var component in field.FieldValues)
                     {
                         Component c = new Component();
-                        c.Name = segCom.Name;
-                        c.ID = segCom.ID;
+                        c.Name = baseComponent.Name;
+                        c.ID = $"{s.Name}-{field.FieldIndex}.{component.ComponentIndex + 1}";
                         f.Components.Add(c);
                     }
+
                     foreach (ParseComponent component in field.FieldValues)
                         f.Components[component.ComponentIndex].Value = component.ComponentValue;
                     s.Fields.Insert(field.FieldIndex + field.FieldOrder, f);
@@ -455,6 +480,18 @@ namespace HL7Lib.Base
             catch (ArgumentOutOfRangeException) { }
             catch (IndexOutOfRangeException) { }
         }
-        #endregion
+
+        #endregion Parse HL7 Segment Methods
+
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return DisplayString;
+        }
     }
 }

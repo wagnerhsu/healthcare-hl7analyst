@@ -307,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="finder graphite.ico" />
+    <None Include="README.md" />
     <None Include="Resources\License.txt" />
     <None Include="Resources\disk.png" />
     <None Include="Resources\delete.png" />
