@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Windows.Forms;
 using FTPLib;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// FTP Connection Form: Used to add a new connection options file.
@@ -29,15 +25,13 @@ namespace HL7_Analyst
     public partial class frmFTPConnection : Form
     {
         /// <summary>
-        /// The Connection Name entered by the user
-        /// </summary>
-        public string ConnectionName = "";
-
-        /// <summary>
         /// The FTPOptions filled in by the user
         /// </summary>
         public FTPOptions ftpOps = new FTPOptions();
-
+        /// <summary>
+        /// The Connection Name entered by the user
+        /// </summary>
+        public string ConnectionName = "";
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -45,7 +39,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Form Load Event: Sets the URL Textbox Selected Start
         /// </summary>
@@ -63,7 +56,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Use Anonymous Checked Changed Event: If Checked it disables User Name Password, if unchecked it enables them.
         /// </summary>
@@ -91,7 +83,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Saves the FTP Connection Options File
         /// </summary>
@@ -101,7 +92,7 @@ namespace HL7_Analyst
         {
             try
             {
-                if (!string.IsNullOrEmpty(txtName.Text))
+                if (!String.IsNullOrEmpty(txtName.Text))
                 {
                     if (txtURL.Text.Length > 6 && txtURL.Text.Contains("ftp://"))
                     {
@@ -112,8 +103,8 @@ namespace HL7_Analyst
                         ftpOps.UserName = txtUserName.Text;
                         ftpOps.UserPassword = txtPassword.Text;
                         ConnectionName = txtName.Text;
-                        DialogResult = DialogResult.OK;
-                        Close();
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
                     }
                     else
                     {
@@ -130,7 +121,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Cancel Button Click Event: Closes the dialog box with a DialogResult of cancelled.
         /// </summary>
@@ -138,8 +128,8 @@ namespace HL7_Analyst
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }        
     }
 }

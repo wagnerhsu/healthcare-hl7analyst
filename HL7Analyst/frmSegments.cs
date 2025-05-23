@@ -13,66 +13,33 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
-using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.ComponentModel;
 using System.IO;
-using System.Windows.Forms;
+using System;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Filled Segments/Fields/Components Form
     /// </summary>
     public partial class frmSegments : Form
     {
-        private readonly List<string> _msgs = new List<string>();
-
+        List<string> msgs = new List<string>();
+        private delegate void AddListViewItemsDelegate(ListViewItem lvi);
+        private delegate void UpdateFormCursorDelegate(Cursor c);
         /// <summary>
         /// Initialization Method
         /// </summary>
-        /// <param name="messages">The messages to check</param>
-        public frmSegments(List<string> messages)
+        /// <param name="Messages">The messages to check</param>
+        public frmSegments(List<string> Messages)
         {
             InitializeComponent();
-            _msgs = messages;
+            msgs = Messages;
         }
-
-        /// <summary>
-        /// Saves the current support to disk
-        /// </summary>
-        private void SaveReport()
-        {
-            try
-            {
-                var dr = sfdSaveReport.ShowDialog();
-
-                if (dr == DialogResult.OK)
-                {
-                    var sw = new StreamWriter(sfdSaveReport.FileName);
-                    sw.WriteLine("Component ID,Name,Minimum Length,Average Length,Maximum Length");
-                    foreach (ListViewItem lvi in lvItems.Items)
-                        sw.WriteLine("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\"", lvi.Text, lvi.SubItems[1].Text,
-                            lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text);
-                    sw.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.LogException(ex).ShowDialog();
-            }
-        }
-
-        private delegate void AddListViewItemsDelegate(ListViewItem lvi);
-
-        private delegate void UpdateFormCursorDelegate(Cursor c);
 
         #region Cross Thread Invoke Methods
-
         /// <summary>
         /// Add list view item to filled fields list view
         /// </summary>
@@ -94,7 +61,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Update forms cursor
         /// </summary>
@@ -103,12 +69,12 @@ namespace HL7_Analyst
         {
             try
             {
-                if (IsHandleCreated)
+                if (this.IsHandleCreated)
                 {
-                    if (InvokeRequired)
-                        Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
+                    if (this.InvokeRequired)
+                        this.Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
                     else
-                        Cursor = c;
+                        this.Cursor = c;
                 }
             }
             catch (Exception ex)
@@ -116,37 +82,34 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         #endregion
 
         #region Event Handlers
-
         /// <summary>
         /// Form Load Event: sets up Background Worker
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void frmSegments_Load(object sender, EventArgs e)
+        private void frmSegments_Load(object sender, System.EventArgs e)
         {
-            var bgw = new BackgroundWorker();
-            bgw.DoWork += bgw_DoWork;
+            BackgroundWorker bgw = new BackgroundWorker();
+            bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
             bgw.RunWorkerAsync();
         }
-
         /// <summary>
         /// Background Worker Do Work Event: fills in the filled fields list view
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 UpdateFormCursor(Cursors.WaitCursor);
-                var fieldList = FilledFields.Calculate(_msgs);
-                foreach (var ff in fieldList)
+                List<FilledFields> fieldList = FilledFields.Calculate(msgs);
+                foreach (FilledFields ff in fieldList)
                 {
-                    var lvi = new ListViewItem(ff.ID);
+                    ListViewItem lvi = new ListViewItem(ff.ID);
                     lvi.SubItems.Add(ff.Name);
                     lvi.SubItems.Add(ff.MinLength.ToString());
                     lvi.SubItems.Add(ff.AvergeLength.ToString());
@@ -160,17 +123,15 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Saves the report
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnSaveReport_Click(object sender, EventArgs e)
+        private void btnSaveReport_Click(object sender, System.EventArgs e)
         {
             SaveReport();
         }
-
         /// <summary>
         /// List View Item Key Down Event: Sets up shortcut key support for saving the report.
         /// </summary>
@@ -197,7 +158,30 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         #endregion
+
+        /// <summary>
+        /// Saves the current support to disk
+        /// </summary>
+        private void SaveReport()
+        {
+            try
+            {
+                DialogResult dr = sfdSaveReport.ShowDialog();
+
+                if (dr == DialogResult.OK)
+                {
+                    StreamWriter sw = new StreamWriter(sfdSaveReport.FileName);
+                    sw.WriteLine("Component ID,Name,Minimum Length,Average Length,Maximum Length");
+                    foreach (ListViewItem lvi in lvItems.Items)
+                        sw.WriteLine(String.Format("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\"", lvi.Text, lvi.SubItems[1].Text, lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text));
+                    sw.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogException(ex).ShowDialog();
+            }
+        }
     }
 }

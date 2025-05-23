@@ -431,6 +431,11 @@ namespace HL7Lib.Base
         {
             foreach (ParseField field in standardFields)
             {
+                var components = s.Fields[field.FieldIndex].Components;
+                for (int i = 0; i < field.FieldValues.Count - components.Count; ++i)
+                {
+                    components.Add(new Component());
+                }
                 foreach (ParseComponent component in field.FieldValues)
                 {
                     try
@@ -453,18 +458,20 @@ namespace HL7Lib.Base
         {
             try
             {
-                repeatedFields.Sort();
                 foreach (ParseField field in repeatedFields)
                 {
                     Field f = new Field(s.Fields[field.FieldIndex].Name);
+                    var baseComponent = s.Fields[field.FieldIndex].Components[0];
                     f.Components = new List<Component>();
-                    foreach (Component segCom in s.Fields[field.FieldIndex].Components)
+
+                    foreach (var component in field.FieldValues)
                     {
                         Component c = new Component();
-                        c.Name = segCom.Name;
-                        c.ID = segCom.ID;
+                        c.Name = baseComponent.Name;
+                        c.ID = $"{s.Name}-{field.FieldIndex}.{component.ComponentIndex + 1}";
                         f.Components.Add(c);
                     }
+
                     foreach (ParseComponent component in field.FieldValues)
                         f.Components[component.ComponentIndex].Value = component.ComponentValue;
                     s.Fields.Insert(field.FieldIndex + field.FieldOrder, f);
@@ -475,5 +482,16 @@ namespace HL7Lib.Base
         }
 
         #endregion Parse HL7 Segment Methods
+
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return DisplayString;
+        }
     }
 }

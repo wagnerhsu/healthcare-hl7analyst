@@ -13,7 +13,7 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     partial class frmReports
     {

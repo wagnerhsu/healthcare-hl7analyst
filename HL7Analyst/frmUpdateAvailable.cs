@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -13,15 +13,17 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Displays if an update is available
@@ -35,7 +37,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Link label click event: Navigates to the download location on CodePlex
         /// </summary>
@@ -45,7 +46,6 @@ namespace HL7_Analyst
         {
             Process.Start("http://hl7analyst.codeplex.com/releases");
         }
-
         /// <summary>
         /// Closes the form
         /// </summary>
@@ -53,7 +53,7 @@ namespace HL7_Analyst
         /// <param name="e"></param>
         private void btnClose_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

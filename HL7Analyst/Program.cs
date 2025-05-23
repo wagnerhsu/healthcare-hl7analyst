@@ -13,24 +13,21 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Windows.Forms;
+using System.Text;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
         /// The main entry point for the application
         /// </summary>
         [STAThread]
-        private static void Main()
+        static void Main()
         {
-            var args = Environment.GetCommandLineArgs();
+            string[] args = Environment.GetCommandLineArgs();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmMain());

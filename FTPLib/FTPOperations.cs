@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-
-#endregion
 
 namespace FTPLib
 {
@@ -40,17 +36,16 @@ namespace FTPLib
         /// <returns>The file name after upload</returns>
         public static string Send(FTPOptions Options, string fileContents, string RemotePath, int fileIndex)
         {
-            var contents = Encoding.UTF8.GetBytes(fileContents);
-            var returnFName = string.Format("HL7Analyst{0}{1}.hl7", DateTime.Now.ToString("MMddyyyyHHmmss"), fileIndex);
-            var request = SetupRequest(Options, RemotePath + "/" + returnFName);
+            byte[] contents = Encoding.UTF8.GetBytes(fileContents);
+            string returnFName = String.Format("HL7Analyst{0}{1}.hl7", DateTime.Now.ToString("MMddyyyyHHmmss"), fileIndex);
+            FtpWebRequest request = SetupRequest(Options, RemotePath + "/" + returnFName);
             request.Method = WebRequestMethods.Ftp.UploadFile;
             request.ContentLength = contents.Length;
-            var requestStream = request.GetRequestStream();
+            Stream requestStream = request.GetRequestStream();
             requestStream.Write(contents, 0, contents.Length);
             requestStream.Close();
             return returnFName;
         }
-
         /// <summary>
         /// Downloads the selected file from the FTP site
         /// </summary>
@@ -59,17 +54,16 @@ namespace FTPLib
         /// <returns>The file contents after download</returns>
         public static string Get(FTPOptions Options, string RemotePath)
         {
-            var request = SetupRequest(Options, RemotePath);
+            FtpWebRequest request = SetupRequest(Options, RemotePath);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
-            var response = (FtpWebResponse) request.GetResponse();
-            var responseStream = response.GetResponseStream();
-            var sr = new StreamReader(responseStream);
-            var s = sr.ReadToEnd();
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            StreamReader sr = new StreamReader(responseStream);
+            string s = sr.ReadToEnd();
             sr.Close();
             response.Close();
             return s;
         }
-
         /// <summary>
         /// Lists the available files in an FTP Remote path
         /// </summary>
@@ -79,19 +73,19 @@ namespace FTPLib
         /// <returns>The list of files to display</returns>
         public static List<string> ListFiles(FTPOptions Options, string RemotePath, List<string> Extensions)
         {
-            var returnList = new List<string>();
-            var request = SetupRequest(Options, RemotePath);
+            List<string> returnList = new List<string>();
+            FtpWebRequest request = SetupRequest(Options, RemotePath);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
-            var response = (FtpWebResponse) request.GetResponse();
-            var responseStream = response.GetResponseStream();
-            var sr = new StreamReader(responseStream);
-            var line = sr.ReadLine();
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            StreamReader sr = new StreamReader(responseStream);
+            string line = sr.ReadLine();
 
             while (line != null)
             {
                 if (line.Contains("."))
                 {
-                    foreach (var ext in Extensions)
+                    foreach (string ext in Extensions)
                     {
                         if (line.Contains("." + ext))
                         {
@@ -103,10 +97,9 @@ namespace FTPLib
                 line = sr.ReadLine();
             }
             sr.Close();
-            response.Close();
+            response.Close();            
             return returnList;
         }
-
         /// <summary>
         /// Lists the directories in the remote FTP path
         /// </summary>
@@ -115,13 +108,13 @@ namespace FTPLib
         /// <returns>The list of directories returned.</returns>
         public static List<string> ListDirs(FTPOptions Options, string RemotePath)
         {
-            var returnList = new List<string>();
-            var request = SetupRequest(Options, RemotePath);
+            List<string> returnList = new List<string>();
+            FtpWebRequest request = SetupRequest(Options, RemotePath);
             request.Method = WebRequestMethods.Ftp.ListDirectory;
-            var response = (FtpWebResponse) request.GetResponse();
-            var responseStream = response.GetResponseStream();
-            var sr = new StreamReader(responseStream);
-            var line = sr.ReadLine();
+            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            StreamReader sr = new StreamReader(responseStream);
+            string line = sr.ReadLine();
 
             while (line != null)
             {
@@ -130,10 +123,9 @@ namespace FTPLib
                 line = sr.ReadLine();
             }
             sr.Close();
-            response.Close();
+            response.Close();            
             return returnList;
         }
-
         /// <summary>
         /// Sets up the FTPWebRequest object to be used
         /// </summary>
@@ -142,7 +134,7 @@ namespace FTPLib
         /// <returns>The FTP Web Request to be used</returns>
         private static FtpWebRequest SetupRequest(FTPOptions Options, string RemotePath)
         {
-            var request = (FtpWebRequest) WebRequest.Create(RemotePath);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(RemotePath);
             request.UsePassive = Options.UsePassive;
             if (Options.AnonymousLogin)
                 request.Credentials = new NetworkCredential("Anonymous", "");

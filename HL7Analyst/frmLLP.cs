@@ -13,15 +13,16 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// LLP Form: Used to selected LLP Header and Trailer hex codes
@@ -32,7 +33,6 @@ namespace HL7_Analyst
         /// The list of LLPObjects selected by the user.
         /// </summary>
         public List<LLP> LLPList = new List<LLP>();
-
         /// <summary>
         /// Initialization Method: Loads the LLP List and sets the List View to the values returned.
         /// </summary>
@@ -41,11 +41,11 @@ namespace HL7_Analyst
             InitializeComponent();
             try
             {
-                foreach (var l in LLP.LoadLlpList())
+                foreach (LLP l in LLP.LoadLLPList())
                 {
-                    var objs = new List<object>();
-                    objs.Add(l.Hex);
-                    objs.Add(l.Description);
+                    List<object> objs = new List<object>();
+                    objs.Add((object)l.Hex);
+                    objs.Add((object)l.Description);
                     dgvLLP.Rows.Add(objs.ToArray());
                 }
             }
@@ -54,7 +54,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Checks if it's a dirty cell state and if it is commits the edit.
         /// </summary>
@@ -72,7 +71,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Checks the checked cell state, if it's checked it adds it to the LLP List if not it removes it.
         /// </summary>
@@ -84,9 +82,9 @@ namespace HL7_Analyst
             {
                 if (dgvLLP.Columns[e.ColumnIndex].Name == "cSelect")
                 {
-                    var checkCell = (DataGridViewCheckBoxCell) dgvLLP.Rows[e.RowIndex].Cells["cSelect"];
-                    var cellChecked = (bool) checkCell.Value;
-                    var hex = dgvLLP.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    DataGridViewCheckBoxCell checkCell = (DataGridViewCheckBoxCell)dgvLLP.Rows[e.RowIndex].Cells["cSelect"];
+                    bool cellChecked = (Boolean)checkCell.Value;
+                    string hex = dgvLLP.Rows[e.RowIndex].Cells[0].Value.ToString();
 
                     if (cellChecked)
                         LLPList.Add(LLP.LoadLLP(hex));

@@ -13,35 +13,33 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
 using HL7Lib.Base;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Build Search Query Form: Used to assist in file search query generation and execution.
     /// </summary>
     public partial class frmBuildSearch : Form
     {
-        private readonly BackgroundWorker bgw = new BackgroundWorker();
-        private readonly List<List<SearchTerm>> searchQuery = new List<List<SearchTerm>>();
-        private readonly Settings settings = new Settings();
-
         /// <summary>
         /// The returned search string after building the query
         /// </summary>
         public StringBuilder returnSearch = new StringBuilder();
-
+        private List<List<SearchTerm>> searchQuery = new List<List<SearchTerm>>();
         private List<SearchTerm> searchGroup = new List<SearchTerm>();
-
+        private delegate void AddRowsDelegate(List<object> objs);
+        private delegate void UpdateFormCursorDelegate(Cursor c);
+        private delegate void AddItemsDelegate(object obj);
+        private delegate void UpdateTextDelegate(string t);
+        BackgroundWorker bgw = new BackgroundWorker();
+        Settings settings = new Settings();
         /// <summary>
         /// Initialization Method: Sets the current search query for display
         /// </summary>
@@ -53,16 +51,7 @@ namespace HL7_Analyst
             txtCurrentQuery.Text = SearchTerm.BuildSearchQueryString(searchQuery);
         }
 
-        private delegate void AddRowsDelegate(List<object> objs);
-
-        private delegate void UpdateFormCursorDelegate(Cursor c);
-
-        private delegate void AddItemsDelegate(object obj);
-
-        private delegate void UpdateTextDelegate(string t);
-
         #region Cross Thread Invoke Methods
-
         /// <summary>
         /// AddRows Method: Adds rows to the data grid across threads.
         /// </summary>
@@ -84,7 +73,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// UpdateFormCursor Method: Updates the forms cursor across threads.
         /// </summary>
@@ -93,12 +81,12 @@ namespace HL7_Analyst
         {
             try
             {
-                if (IsHandleCreated)
+                if (this.IsHandleCreated)
                 {
-                    if (InvokeRequired)
-                        Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
+                    if (this.InvokeRequired)
+                        this.Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
                     else
-                        Cursor = c;
+                        this.Cursor = c;
                 }
             }
             catch (Exception ex)
@@ -106,7 +94,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// AddItems Method: Adds items to the Segment Selector across threads.
         /// </summary>
@@ -128,7 +115,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// UpdateText Method: Updates the current text of the Segment Selector across threads.
         /// </summary>
@@ -150,11 +136,9 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         #endregion
 
         #region Event Handlers
-
         /// <summary>
         /// Form Load Event: Gets settings from file and sets up event handler for the background worker DoWork event.
         /// </summary>
@@ -165,7 +149,7 @@ namespace HL7_Analyst
             try
             {
                 settings.GetSettings();
-                bgw.DoWork += bgw_DoWork;
+                bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
                 bgw.RunWorkerAsync();
             }
             catch (Exception ex)
@@ -173,19 +157,18 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Background Worker Do Work Event: Sets the data grids display and adds all items to the segment selector
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 UpdateFormCursor(Cursors.WaitCursor);
-                var segs = new List<Segments>();
-                foreach (Segments s in Enum.GetValues(typeof (Segments)))
+                List<Segments> segs = new List<Segments>();
+                foreach (Segments s in Enum.GetValues(typeof(Segments)))
                 {
                     segs.Add(s);
                     AddItems(s);
@@ -202,7 +185,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Segment Selector Selected Index Changed Event: Loads the selected segments fields and components to the data grid.
         /// </summary>
@@ -214,7 +196,7 @@ namespace HL7_Analyst
             {
                 if (cbSegmentSelector.SelectedIndex > -1)
                 {
-                    var s = (Segments) cbSegmentSelector.SelectedItem;
+                    Segments s = (Segments)cbSegmentSelector.SelectedItem;
                     dgvComponents.Rows.Clear();
                     LoadDataGrid(s);
                 }
@@ -224,7 +206,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Data Grid Cell End Edit Event: Sets the entered value to the search query string builder for use in the frmSearch search terms box.
         /// </summary>
@@ -234,13 +215,13 @@ namespace HL7_Analyst
         {
             try
             {
-                var id = dgvComponents["cID", e.RowIndex].Value.ToString();
-                var v = dgvComponents["cValue", e.RowIndex].Value.ToString();
+                string id = dgvComponents["cID", e.RowIndex].Value.ToString();
+                string v = dgvComponents["cValue", e.RowIndex].Value.ToString();
 
                 if (searchQuery.Contains(searchGroup))
                     searchQuery.Remove(searchGroup);
 
-                if (!string.IsNullOrEmpty(v))
+                if (!String.IsNullOrEmpty(v))
                     AddSearchQueryItem(id, v);
                 else
                     RemoveSearchQueryItem(id);
@@ -252,7 +233,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Add Button Click Event: Adds a new search query group to the search query string builder.
         /// </summary>
@@ -272,7 +252,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// OK Button Click Event: Returns the txtCurrentQuery text after building the search query, then closes the form.
         /// </summary>
@@ -283,15 +262,14 @@ namespace HL7_Analyst
             try
             {
                 returnSearch.Append(txtCurrentQuery.Text);
-                DialogResult = DialogResult.OK;
-                Close();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Cancel Button Click Event: Cancels the dialog box
         /// </summary>
@@ -301,8 +279,8 @@ namespace HL7_Analyst
         {
             try
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -321,22 +299,20 @@ namespace HL7_Analyst
                     if (txtCurrentQuery.Text.Length > 0)
                     {
                         returnSearch.Append(txtCurrentQuery.Text);
-                        DialogResult = DialogResult.OK;
-                        Close();
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
                     }
                     else
                     {
-                        DialogResult = DialogResult.Cancel;
-                        Close();
+                        this.DialogResult = DialogResult.Cancel;
+                        this.Close();
                     }
                 }
             }
         }
-
         #endregion
 
         #region Private Methods
-
         /// <summary>
         /// Loads the data grid with the selected segments fields and components
         /// </summary>
@@ -345,22 +321,22 @@ namespace HL7_Analyst
         {
             try
             {
-                var seg = new Segment(s);
-                foreach (var f in seg.Fields)
+                Segment seg = new Segment(s);
+                foreach (Field f in seg.Fields)
                 {
-                    foreach (var c in f.Components)
+                    foreach (HL7Lib.Base.Component c in f.Components)
                     {
-                        if (!string.IsNullOrEmpty(c.ID))
+                        if (!String.IsNullOrEmpty(c.ID))
                         {
-                            var nameColumn = "";
-                            if (!string.IsNullOrEmpty(c.Name))
+                            string nameColumn = "";
+                            if (!String.IsNullOrEmpty(c.Name))
                                 nameColumn = f.Name + "-|-" + c.Name;
                             else
                                 nameColumn = f.Name;
-                            var objs = new List<object>();
-                            objs.Add(c.ID);
-                            objs.Add(nameColumn);
-                            objs.Add("");
+                            List<object> objs = new List<object>();
+                            objs.Add((object)c.ID);
+                            objs.Add((object)nameColumn);
+                            objs.Add((object)"");
                             AddRows(objs);
                         }
                     }
@@ -371,7 +347,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Adds a search item to the search query
         /// </summary>
@@ -381,14 +356,12 @@ namespace HL7_Analyst
         {
             try
             {
-                var old = GetSearchQueryItem(id);
+                SearchTerm old = GetSearchQueryItem(id);
                 if (old != null)
                     RemoveSearchQueryItem(id);
-                var st = new SearchTerm
-                {
-                    ID = id,
-                    Value = v
-                };
+                SearchTerm st = new SearchTerm();
+                st.ID = id;
+                st.Value = v;
                 searchGroup.Add(st);
             }
             catch (Exception ex)
@@ -396,7 +369,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Pulls the specified search term
         /// </summary>
@@ -406,7 +378,7 @@ namespace HL7_Analyst
         {
             try
             {
-                var st = searchGroup.Find(s => s.ID == id);
+                SearchTerm st = searchGroup.Find(delegate(SearchTerm s) { return s.ID == id; });
                 return st;
             }
             catch (Exception ex)
@@ -415,7 +387,6 @@ namespace HL7_Analyst
                 return null;
             }
         }
-
         /// <summary>
         /// Removes a search term from the list with the specified component id
         /// </summary>
@@ -424,7 +395,7 @@ namespace HL7_Analyst
         {
             try
             {
-                var st = GetSearchQueryItem(id);
+                SearchTerm st = GetSearchQueryItem(id);
                 if (st != null)
                     searchGroup.Remove(st);
             }
@@ -433,7 +404,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
-        #endregion
+        #endregion        
     }
 }

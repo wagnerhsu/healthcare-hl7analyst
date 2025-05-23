@@ -13,8 +13,6 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,22 +20,21 @@ using System.Drawing;
 using System.Windows.Forms;
 using HL7Lib.Base;
 using ZedGraph;
-using Message = HL7Lib.Base.Message;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Message Stats form: Displays a graph (Using ZedGraph) of the specified statistics from the messages currently loaded into the HL7 Analyst.
     /// </summary>
     public partial class frmMessageStats : Form
     {
-        private readonly string _componentId = "";
-        private readonly string _graphType = "";
-        private readonly string _gTitle = "";
-        private readonly List<string> _messages = new List<string>();
+        List<string> Messages = new List<string>();
+        string gTitle = "";
+        string componentID = "";
+        string graphType = "";
 
+        private delegate void UpdateGraphCursorDelegate(Cursor c);
+        private delegate void RefreshGraphDelegate();        
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -48,18 +45,13 @@ namespace HL7_Analyst
         public frmMessageStats(List<string> msgs, string gt, string cID, string gType)
         {
             InitializeComponent();
-            _messages = msgs;
-            _gTitle = gt;
-            _componentId = cID;
-            _graphType = gType;
+            Messages = msgs;
+            gTitle = gt;
+            componentID = cID;
+            graphType = gType;
         }
 
-        private delegate void UpdateGraphCursorDelegate(Cursor c);
-
-        private delegate void RefreshGraphDelegate();
-
         #region Cross Thread Invoke Methods
-
         /// <summary>
         /// Sets the graphs cursor to the specified cursor
         /// </summary>
@@ -81,7 +73,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Refreshes the graphs display
         /// </summary>
@@ -101,12 +92,10 @@ namespace HL7_Analyst
             {
                 Log.LogException(ex);
             }
-        }
-
+        } 
         #endregion
 
         #region Event Handlers
-
         /// <summary>
         /// Form Load Event: Sets the initial display of the graph and sets up the background worker.
         /// </summary>
@@ -116,15 +105,15 @@ namespace HL7_Analyst
         {
             try
             {
-                Text = string.Format("Message Statistics - {0}", _gTitle);
+                this.Text = String.Format("Message Statistics - {0}", gTitle);
                 SetInitialGraphDisplay();
                 zgGraph.PanButtons = MouseButtons.Left;
                 zgGraph.PanModifierKeys = Keys.None;
                 zgGraph.ZoomButtons = MouseButtons.Left;
                 zgGraph.ZoomModifierKeys = Keys.Control;
 
-                var bgw = new BackgroundWorker();
-                bgw.DoWork += bgw_DoWork;
+                BackgroundWorker bgw = new BackgroundWorker();
+                bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
                 bgw.RunWorkerAsync();
             }
             catch (Exception ex)
@@ -132,19 +121,18 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Background Worker Do Work Event: Performs calculation logic and creates the chart
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 UpdateGraphCursor(Cursors.WaitCursor);
-                var gItems = new List<GraphItems>();
-                switch (_graphType.ToUpper())
+                List<GraphItems> gItems = new List<GraphItems>();
+                switch (graphType.ToUpper())
                 {
                     case "STAT":
                         gItems = ProcessStatChartItems();
@@ -166,12 +154,10 @@ namespace HL7_Analyst
             {
                 Log.LogException(ex).ShowDialog();
             }
-        }
-
+        } 
         #endregion
 
         #region Private Methods
-
         /// <summary>
         /// Calculates the stat chart values on the selected message components.
         /// </summary>
@@ -180,18 +166,18 @@ namespace HL7_Analyst
         {
             try
             {
-                var gItems = new List<GraphItems>();
-                foreach (var m in _messages)
+                List<GraphItems> gItems = new List<GraphItems>();
+                foreach (string m in Messages)
                 {
-                    var msg = new Message(m);
-                    var coms = msg.GetByID(_componentId);
+                    HL7Lib.Base.Message msg = new HL7Lib.Base.Message(m);
+                    List<HL7Lib.Base.Component> coms = msg.GetByID(componentID);
                     if (coms != null && coms.Count == 1)
                     {
-                        var gi = GraphItems.GetGraphItem(gItems, coms[0].Value);
+                        GraphItems gi = GraphItems.GetGraphItem(gItems, coms[0].Value);
                         if (gi != null)
                         {
                             gItems.Remove(gi);
-                            var count = gi.Count + 1;
+                            int count = gi.Count + 1;
                             gi = new GraphItems(coms[0].Value, count);
                             gItems.Add(gi);
                         }
@@ -210,7 +196,6 @@ namespace HL7_Analyst
                 return new List<GraphItems>();
             }
         }
-
         /// <summary>
         /// Calculates the stat chart values on the Message Date/Time component of the MSH segment for Hourly Traffic Stats.
         /// </summary>
@@ -219,115 +204,67 @@ namespace HL7_Analyst
         {
             try
             {
-                var h0 = 0;
-                var h1 = 0;
-                var h2 = 0;
-                var h3 = 0;
-                var h4 = 0;
-                var h5 = 0;
-                var h6 = 0;
-                var h7 = 0;
-                var h8 = 0;
-                var h9 = 0;
-                var h10 = 0;
-                var h11 = 0;
-                var h12 = 0;
-                var h13 = 0;
-                var h14 = 0;
-                var h15 = 0;
-                var h16 = 0;
-                var h17 = 0;
-                var h18 = 0;
-                var h19 = 0;
-                var h20 = 0;
-                var h21 = 0;
-                var h22 = 0;
-                var h23 = 0;
-                var gItems = new List<GraphItems>();
+                int h0 = 0;
+                int h1 = 0;
+                int h2 = 0;
+                int h3 = 0;
+                int h4 = 0;
+                int h5 = 0;
+                int h6 = 0;
+                int h7 = 0;
+                int h8 = 0;
+                int h9 = 0;
+                int h10 = 0;
+                int h11 = 0;
+                int h12 = 0;
+                int h13 = 0;
+                int h14 = 0;
+                int h15 = 0;
+                int h16 = 0;
+                int h17 = 0;
+                int h18 = 0;
+                int h19 = 0;
+                int h20 = 0;
+                int h21 = 0;
+                int h22 = 0;
+                int h23 = 0;
+                List<GraphItems> gItems = new List<GraphItems>();
 
-                foreach (var m in _messages)
+                foreach (string m in Messages)
                 {
-                    var msg = new Message(m);
-                    var coms = msg.GetByID(_componentId);
+                    HL7Lib.Base.Message msg = new HL7Lib.Base.Message(m);
+                    List<HL7Lib.Base.Component> coms = msg.GetByID(componentID);
                     if (coms != null && coms.Count == 1)
                     {
-                        var d = coms[0].Value.FromHl7Date();
+                        Nullable<DateTime> d = coms[0].Value.FromHL7Date();
                         if (d != null)
                         {
                             switch (d.Value.ToString("HH"))
                             {
-                                case "00":
-                                    h0++;
-                                    break;
-                                case "01":
-                                    h1++;
-                                    break;
-                                case "02":
-                                    h2++;
-                                    break;
-                                case "03":
-                                    h3++;
-                                    break;
-                                case "04":
-                                    h4++;
-                                    break;
-                                case "05":
-                                    h5++;
-                                    break;
-                                case "06":
-                                    h6++;
-                                    break;
-                                case "07":
-                                    h7++;
-                                    break;
-                                case "08":
-                                    h8++;
-                                    break;
-                                case "09":
-                                    h9++;
-                                    break;
-                                case "10":
-                                    h10++;
-                                    break;
-                                case "11":
-                                    h11++;
-                                    break;
-                                case "12":
-                                    h12++;
-                                    break;
-                                case "13":
-                                    h13++;
-                                    break;
-                                case "14":
-                                    h14++;
-                                    break;
-                                case "15":
-                                    h15++;
-                                    break;
-                                case "16":
-                                    h16++;
-                                    break;
-                                case "17":
-                                    h17++;
-                                    break;
-                                case "18":
-                                    h18++;
-                                    break;
-                                case "19":
-                                    h19++;
-                                    break;
-                                case "20":
-                                    h20++;
-                                    break;
-                                case "21":
-                                    h21++;
-                                    break;
-                                case "22":
-                                    h22++;
-                                    break;
-                                case "23":
-                                    h23++;
-                                    break;
+                                case "00": h0++; break;
+                                case "01": h1++; break;
+                                case "02": h2++; break;
+                                case "03": h3++; break;
+                                case "04": h4++; break;
+                                case "05": h5++; break;
+                                case "06": h6++; break;
+                                case "07": h7++; break;
+                                case "08": h8++; break;
+                                case "09": h9++; break;
+                                case "10": h10++; break;
+                                case "11": h11++; break;
+                                case "12": h12++; break;
+                                case "13": h13++; break;
+                                case "14": h14++; break;
+                                case "15": h15++; break;
+                                case "16": h16++; break;
+                                case "17": h17++; break;
+                                case "18": h18++; break;
+                                case "19": h19++; break;
+                                case "20": h20++; break;
+                                case "21": h21++; break;
+                                case "22": h22++; break;
+                                case "23": h23++; break;
                             }
                         }
                     }
@@ -364,7 +301,6 @@ namespace HL7_Analyst
                 return new List<GraphItems>();
             }
         }
-
         /// <summary>
         /// Calculates the stat chart values on the Message Date/Time component of the MSH segment for Daily Traffic Stats.
         /// </summary>
@@ -373,47 +309,33 @@ namespace HL7_Analyst
         {
             try
             {
-                var d1 = 0;
-                var d2 = 0;
-                var d3 = 0;
-                var d4 = 0;
-                var d5 = 0;
-                var d6 = 0;
-                var d7 = 0;
-                var gItems = new List<GraphItems>();
+                int d1 = 0;
+                int d2 = 0;
+                int d3 = 0;
+                int d4 = 0;
+                int d5 = 0;
+                int d6 = 0;
+                int d7 = 0;
+                List<GraphItems> gItems = new List<GraphItems>();
 
-                foreach (var m in _messages)
+                foreach (string m in Messages)
                 {
-                    var msg = new Message(m);
-                    var coms = msg.GetByID(_componentId);
+                    HL7Lib.Base.Message msg = new HL7Lib.Base.Message(m);
+                    List<HL7Lib.Base.Component> coms = msg.GetByID(componentID);
                     if (coms != null && coms.Count == 1)
                     {
-                        var d = coms[0].Value.FromHl7Date();
+                        Nullable<DateTime> d = coms[0].Value.FromHL7Date();
                         if (d != null)
                         {
                             switch (d.Value.DayOfWeek)
                             {
-                                case DayOfWeek.Sunday:
-                                    d1++;
-                                    break;
-                                case DayOfWeek.Monday:
-                                    d2++;
-                                    break;
-                                case DayOfWeek.Tuesday:
-                                    d3++;
-                                    break;
-                                case DayOfWeek.Wednesday:
-                                    d4++;
-                                    break;
-                                case DayOfWeek.Thursday:
-                                    d5++;
-                                    break;
-                                case DayOfWeek.Friday:
-                                    d6++;
-                                    break;
-                                case DayOfWeek.Saturday:
-                                    d7++;
-                                    break;
+                                case DayOfWeek.Sunday: d1++; break;
+                                case DayOfWeek.Monday: d2++; break;
+                                case DayOfWeek.Tuesday: d3++; break;
+                                case DayOfWeek.Wednesday: d4++; break;
+                                case DayOfWeek.Thursday: d5++; break;
+                                case DayOfWeek.Friday: d6++; break;
+                                case DayOfWeek.Saturday: d7++; break;
                             }
                         }
                     }
@@ -433,7 +355,6 @@ namespace HL7_Analyst
                 return new List<GraphItems>();
             }
         }
-
         /// <summary>
         /// Creates the chart using the specified GraphItems.
         /// </summary>
@@ -442,13 +363,13 @@ namespace HL7_Analyst
         {
             try
             {
-                var y = new List<double>();
-                var lbls = new List<string>();
+                List<double> y = new List<double>();
+                List<string> lbls = new List<string>();
 
-                for (var i = 0; i < gItems.Count; i++)
+                for (int i = 0; i < gItems.Count; i++)
                 {
-                    y.Add(gItems[i].Count);
-                    if (!string.IsNullOrEmpty(gItems[i].Name))
+                    y.Add((double)gItems[i].Count);
+                    if (!String.IsNullOrEmpty(gItems[i].Name))
                         lbls.Add(gItems[i].Name);
                     else
                         lbls.Add("Blank");
@@ -456,7 +377,7 @@ namespace HL7_Analyst
                 GraphPane myPane = zgGraph.GraphPane;
                 myPane.XAxis.Scale.TextLabels = lbls.ToArray();
 
-                BarItem myCurve = myPane.AddBar(_gTitle, null, y.ToArray(), Color.White);
+                BarItem myCurve = myPane.AddBar(gTitle, null, y.ToArray(), Color.White);
                 myCurve.Bar.Fill.Color = Color.CornflowerBlue;
                 myCurve.Bar.Fill.Type = FillType.GradientByY;
                 myCurve.Label.IsVisible = true;
@@ -466,10 +387,9 @@ namespace HL7_Analyst
             }
             catch (Exception ex)
             {
-                Log.LogException(ex).ShowDialog();
+                Log.LogException(ex).ShowDialog();                
             }
         }
-
         /// <summary>
         /// Sets the initial display values for the graph.
         /// </summary>
@@ -478,7 +398,7 @@ namespace HL7_Analyst
             try
             {
                 GraphPane myPane = zgGraph.GraphPane;
-                myPane.Title.Text = _gTitle;
+                myPane.Title.Text = gTitle;
                 myPane.Title.FontSpec.IsItalic = true;
                 myPane.Title.FontSpec.Size = 24f;
                 myPane.Title.FontSpec.Family = "Times New Roman";
@@ -493,10 +413,9 @@ namespace HL7_Analyst
             }
             catch (Exception ex)
             {
-                Log.LogException(ex).ShowDialog();
+                Log.LogException(ex).ShowDialog();                
             }
-        }
-
+        } 
         #endregion
     }
 }

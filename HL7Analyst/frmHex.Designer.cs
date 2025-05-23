@@ -1,4 +1,4 @@
-﻿namespace HL7_Analyst
+namespace HL7Analyst
 {
     partial class frmHex
     {

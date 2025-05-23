@@ -13,7 +13,7 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     partial class frmErrorReport
     {
@@ -56,25 +56,23 @@ namespace HL7_Analyst
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 11);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 17);
+            this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Error Message:";
             // 
             // txtErrorMessage
             // 
-            this.txtErrorMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtErrorMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtErrorMessage.BackColor = System.Drawing.Color.White;
-            this.txtErrorMessage.Location = new System.Drawing.Point(20, 31);
-            this.txtErrorMessage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtErrorMessage.Location = new System.Drawing.Point(15, 25);
             this.txtErrorMessage.Multiline = true;
             this.txtErrorMessage.Name = "txtErrorMessage";
             this.txtErrorMessage.ReadOnly = true;
             this.txtErrorMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtErrorMessage.Size = new System.Drawing.Size(817, 75);
+            this.txtErrorMessage.Size = new System.Drawing.Size(614, 62);
             this.txtErrorMessage.TabIndex = 1;
             this.txtErrorMessage.TabStop = false;
             this.txtErrorMessage.WordWrap = false;
@@ -82,25 +80,23 @@ namespace HL7_Analyst
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 111);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(12, 90);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 17);
+            this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Stack Trace:";
             // 
             // txtStackTrace
             // 
-            this.txtStackTrace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtStackTrace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtStackTrace.BackColor = System.Drawing.Color.White;
-            this.txtStackTrace.Location = new System.Drawing.Point(20, 130);
-            this.txtStackTrace.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtStackTrace.Location = new System.Drawing.Point(15, 106);
             this.txtStackTrace.Multiline = true;
             this.txtStackTrace.Name = "txtStackTrace";
             this.txtStackTrace.ReadOnly = true;
             this.txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtStackTrace.Size = new System.Drawing.Size(817, 223);
+            this.txtStackTrace.Size = new System.Drawing.Size(614, 182);
             this.txtStackTrace.TabIndex = 3;
             this.txtStackTrace.TabStop = false;
             this.txtStackTrace.WordWrap = false;
@@ -108,10 +104,9 @@ namespace HL7_Analyst
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(631, 362);
-            this.btnSend.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSend.Location = new System.Drawing.Point(473, 294);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(100, 28);
+            this.btnSend.Size = new System.Drawing.Size(75, 23);
             this.btnSend.TabIndex = 0;
             this.btnSend.Text = "Yes, Send";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -120,21 +115,19 @@ namespace HL7_Analyst
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 368);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(12, 299);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(614, 17);
+            this.label3.Size = new System.Drawing.Size(456, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Would you like to send this error report to the developers? This will open your d" +
-    "efault mail client.";
+                "efault mail client.";
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(739, 362);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Location = new System.Drawing.Point(554, 294);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 28);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "No";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -142,10 +135,9 @@ namespace HL7_Analyst
             // 
             // frmErrorReport
             // 
-            this.AcceptButton = this.btnCancel;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(851, 402);
+            this.ClientSize = new System.Drawing.Size(638, 327);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnSend);
@@ -154,7 +146,6 @@ namespace HL7_Analyst
             this.Controls.Add(this.txtErrorMessage);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "frmErrorReport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Error Report";

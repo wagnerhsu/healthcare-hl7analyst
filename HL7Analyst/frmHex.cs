@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -13,23 +13,18 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Displays the message passed to it in hex format
     /// </summary>
     public partial class frmHex : Form
-    {
-        private int _hexScrollPos;
-        private int _messageScrollPos;
-
+    {        
+        private int messageScrollPos = 0;
+        private int hexScrollPos = 0;
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -39,7 +34,6 @@ namespace HL7_Analyst
             InitializeComponent();
             SetHexDisplay(message.ToCharArray());
         }
-
         /// <summary>
         /// Processes the character array passed to it into each of the respective data grid views on the form
         /// </summary>
@@ -50,14 +44,13 @@ namespace HL7_Analyst
             {
                 dgvMessage.Rows.Add();
                 dgvHex.Rows.Add();
-                var x = 0;
+                int x = 0;
 
-                for (var i = 0; i < message.Length; i++)
+                for (int i = 0; i < message.Length; i++)
                 {
                     int tmp = message[i];
                     dgvMessage.Rows[dgvMessage.Rows.Count - 1].Cells[x].Value = message[i].ToString();
-                    dgvHex.Rows[dgvHex.Rows.Count - 1].Cells[x].Value = string.Format("{0:x2}",
-                        Convert.ToUInt32(tmp.ToString()));
+                    dgvHex.Rows[dgvHex.Rows.Count - 1].Cells[x].Value = String.Format("{0:x2}", (uint)Convert.ToUInt32(tmp.ToString()));
 
                     if (x == 9)
                     {
@@ -76,7 +69,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Changes the selected cell in the Hex data grid to match the selected cell in the Message data grid
         /// </summary>
@@ -94,7 +86,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Changes the selected cell in the Message data grid to match the selected cell in the Hex data grid
         /// </summary>
@@ -111,8 +102,7 @@ namespace HL7_Analyst
             {
                 Log.LogException(ex);
             }
-        }
-
+        } 
         /// <summary>
         /// Passes the scrolling position to the Hex data grid if the caller is the Message data grid, if not it sets the Message data grid scroll position to the Hex data grids scroll position.
         /// This allows both data grids to scroll together.
@@ -125,13 +115,12 @@ namespace HL7_Analyst
             {
                 if ((sender == dgvMessage) && (e.ScrollOrientation == ScrollOrientation.VerticalScroll))
                 {
-                    _messageScrollPos = dgvMessage.FirstDisplayedScrollingRowIndex;
-                    dgvHex_Scroll(dgvMessage,
-                        new ScrollEventArgs(ScrollEventType.ThumbPosition, e.NewValue, ScrollOrientation.VerticalScroll));
+                    messageScrollPos = dgvMessage.FirstDisplayedScrollingRowIndex;
+                    dgvHex_Scroll(dgvMessage, new ScrollEventArgs(ScrollEventType.ThumbPosition, e.NewValue, ScrollOrientation.VerticalScroll));
                 }
                 if ((sender == dgvHex) && (e.ScrollOrientation == ScrollOrientation.VerticalScroll))
                 {
-                    dgvMessage.FirstDisplayedScrollingRowIndex = _hexScrollPos;
+                    dgvMessage.FirstDisplayedScrollingRowIndex = hexScrollPos;
                 }
             }
             catch (Exception ex)
@@ -139,7 +128,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Passes the scrolling position to the Message data grid if the caller is the Hex data grid, if not it sets the Hex data grid scroll position to the Message data grids scroll position.
         /// This allows both data grids to scroll together.
@@ -152,13 +140,12 @@ namespace HL7_Analyst
             {
                 if ((sender == dgvHex) && (e.ScrollOrientation == ScrollOrientation.VerticalScroll))
                 {
-                    _hexScrollPos = dgvHex.FirstDisplayedScrollingRowIndex;
-                    dgvMessage_Scroll(dgvHex,
-                        new ScrollEventArgs(ScrollEventType.ThumbPosition, e.NewValue, ScrollOrientation.VerticalScroll));
+                    hexScrollPos = dgvHex.FirstDisplayedScrollingRowIndex;
+                    dgvMessage_Scroll(dgvHex, new ScrollEventArgs(ScrollEventType.ThumbPosition, e.NewValue, ScrollOrientation.VerticalScroll));
                 }
                 if ((sender == dgvMessage) && (e.ScrollOrientation == ScrollOrientation.VerticalScroll))
                 {
-                    dgvHex.FirstDisplayedScrollingRowIndex = _messageScrollPos;
+                    dgvHex.FirstDisplayedScrollingRowIndex = messageScrollPos;
                 }
             }
             catch (Exception ex)
@@ -166,5 +153,7 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
+
+               
     }
 }

@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -19,7 +19,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Database Options Class: Used to store and manage database options objects used in database connections.

@@ -13,16 +13,12 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
-using System.Xml;
 
-#endregion
+using System.Xml;
 
 namespace FTPLib
 {
@@ -35,53 +31,49 @@ namespace FTPLib
         /// The User Name to use with this FTP Connection
         /// </summary>
         public string UserName { get; set; }
-
         /// <summary>
         /// The Password to use with this FTP Connection
         /// </summary>
         public string UserPassword { get; set; }
-
         /// <summary>
         /// The FTP Address to use for this FTP Connection
         /// </summary>
         public string FTPAddress { get; set; }
-
         /// <summary>
         /// Determines if thsi FTP Connection should use passive mode
         /// </summary>
         public bool UsePassive { get; set; }
-
         /// <summary>
         /// Determines if this FTP Connection should use Anonymous Login
         /// </summary>
         public bool AnonymousLogin { get; set; }
-
         /// <summary>
         /// Determines if SSL should be used with this FTP Connection
         /// </summary>
         public bool UseSSL { get; set; }
-
         /// <summary>
         /// Pulls the list of FTP Connection files
         /// </summary>
         /// <returns>The list of FTP Connection files</returns>
         public static List<string> GetFTPConnections()
         {
-            var rootPath = Path.Combine(Application.StartupPath, "FTP");
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "FTP");
             if (Directory.Exists(rootPath))
             {
-                var s = new List<string>();
-                foreach (var f in Directory.GetFiles(rootPath, "*.xml", SearchOption.TopDirectoryOnly))
+                List<string> s = new List<string>();
+                foreach (string f in Directory.GetFiles(rootPath, "*.xml", SearchOption.TopDirectoryOnly))
                 {
-                    var fi = new FileInfo(f);
+                    FileInfo fi = new FileInfo(f);
                     s.Add(fi.Name.Replace(fi.Extension, ""));
                 }
                 return s;
             }
-            Directory.CreateDirectory(rootPath);
-            return new List<string>();
+            else
+            {
+                Directory.CreateDirectory(rootPath);
+                return new List<string>();
+            }
         }
-
         /// <summary>
         /// Loads the specified FTP Connection file
         /// </summary>
@@ -89,13 +81,13 @@ namespace FTPLib
         /// <returns>The FTP Options pulled from the FTP Connection file</returns>
         public static FTPOptions Load(string FTPFile)
         {
-            var rootPath = Path.Combine(Application.StartupPath, "FTP");
-            var xtr = new XmlTextReader(Path.Combine(rootPath, FTPFile + ".xml"));
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "FTP");
+            XmlTextReader xtr = new XmlTextReader(Path.Combine(rootPath, FTPFile + ".xml"));
             xtr.Read();
-            var xDoc = new XmlDocument();
+            XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xtr);
 
-            var ftpo = new FTPOptions();
+            FTPOptions ftpo = new FTPOptions();
             if (xDoc.SelectSingleNode("FTPOptions/UserName") != null)
                 ftpo.UserName = xDoc.SelectSingleNode("FTPOptions/UserName").InnerText;
             if (xDoc.SelectSingleNode("FTPOptions/UserPassword") != null)
@@ -111,7 +103,6 @@ namespace FTPLib
             xtr.Close();
             return ftpo;
         }
-
         /// <summary>
         /// Saves the specified FTP Options Connection File.
         /// </summary>
@@ -119,8 +110,8 @@ namespace FTPLib
         /// <param name="conName">The file name to use</param>
         public void Save(FTPOptions ops, string conName)
         {
-            var rootPath = Path.Combine(Application.StartupPath, "FTP");
-            var xtw = new XmlTextWriter(Path.Combine(rootPath, RemoveUnsupportedChars(conName) + ".xml"), Encoding.UTF8);
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "FTP");
+            XmlTextWriter xtw = new XmlTextWriter(Path.Combine(rootPath, RemoveUnsupportedChars(conName) + ".xml"), Encoding.UTF8);
             xtw.WriteStartDocument();
             xtw.WriteStartElement("FTPOptions");
             xtw.WriteStartElement("UserName");
@@ -145,17 +136,15 @@ namespace FTPLib
             xtw.WriteEndDocument();
             xtw.Close();
         }
-
         /// <summary>
         /// Deletes the specified connection file
         /// </summary>
         /// <param name="conName">The connection file to delete</param>
         public static void Delete(string conName)
         {
-            var rootPath = Path.Combine(Application.StartupPath, "FTP");
+            string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "FTP");
             File.Delete(Path.Combine(rootPath, conName + ".xml"));
         }
-
         /// <summary>
         /// Removes the specified characters from the file name.
         /// </summary>
@@ -163,7 +152,7 @@ namespace FTPLib
         /// <returns>The File Name after cleaning unsupported characters from it</returns>
         private string RemoveUnsupportedChars(string FileName)
         {
-            var s = FileName;
+            string s = FileName;
             s = s.Replace("\\", "");
             s = s.Replace("/", "");
             s = s.Replace(":", "");

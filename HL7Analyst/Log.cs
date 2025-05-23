@@ -13,27 +13,23 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
-using System;
 using NLog;
+using System;
+using System.IO;
+using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Log Class: Used to log exceptions to disk
     /// </summary>
-    internal class Log
+    class Log
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-
+        static ILogger Logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The exception that is being logged
         /// </summary>
         public Exception Error { get; set; }
-
         /// <summary>
         /// Logs the specified exception to a log file on disk and returns an Error Report Form containing the error message
         /// </summary>
@@ -41,8 +37,8 @@ namespace HL7_Analyst
         /// <returns>Returns an Error Report Form</returns>
         public static frmErrorReport LogException(Exception err)
         {
-            var fer = new frmErrorReport(err);
-            Logger.Error(err.ToString());
+            frmErrorReport fer = new frmErrorReport(err);
+            Logger.Error(err);
             return fer;
         }
     }

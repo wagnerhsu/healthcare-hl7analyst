@@ -13,14 +13,10 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// New Report Form: Gathers the new report name
@@ -34,7 +30,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Report Name Texbox Key Down Event
         /// </summary>
@@ -49,14 +44,14 @@ namespace HL7_Analyst
                     case Keys.Enter:
                         e.SuppressKeyPress = true;
                         e.Handled = true;
-                        DialogResult = DialogResult.OK;
-                        Close();
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
                         break;
                     case Keys.Escape:
                         e.SuppressKeyPress = true;
                         e.Handled = true;
-                        DialogResult = DialogResult.Cancel;
-                        Close();
+                        this.DialogResult = DialogResult.Cancel;
+                        this.Close();
                         break;
                 }
             }

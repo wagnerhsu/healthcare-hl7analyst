@@ -13,15 +13,16 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Edit Field Form: Used to modify selected fields in the current message or all messages.
@@ -29,15 +30,13 @@ namespace HL7_Analyst
     public partial class frmEditField : Form
     {
         /// <summary>
-        /// A bool value indicating if all messages should be edited or just the current message
-        /// </summary>
-        public bool EditAllMessages;
-
-        /// <summary>
         /// The list of edited items
         /// </summary>
         public List<EditItem> Items = new List<EditItem>();
-
+        /// <summary>
+        /// A bool value indicating if all messages should be edited or just the current message
+        /// </summary>
+        public bool EditAllMessages = false;
         /// <summary>
         /// Initialization Code: Takes a list of list view items that were selected for editing.
         /// </summary>
@@ -47,28 +46,27 @@ namespace HL7_Analyst
             InitializeComponent();
             try
             {
-                foreach (var lvi in lvis)
+                foreach (ListViewItem lvi in lvis)
                 {
-                    var objs = new List<object>();
-                    for (var i = 0; i < lvi.SubItems.Count; i++)
+                    List<object> objs = new List<object>();
+                    for (int i = 0; i < lvi.SubItems.Count; i++)
                     {
                         objs.Add(lvi.SubItems[i].Text);
                     }
-                    var item = new EditItem(lvi.Text);
+                    EditItem item = new EditItem(lvi.Text);
                     item.OldValue = lvi.SubItems[2].Text;
                     item.NewValue = lvi.SubItems[2].Text;
                     Items.Add(item);
                     dgvEditField.Rows.Add(objs.ToArray());
                 }
                 if (dgvEditField.Rows.Count > 0)
-                    dgvEditField.CurrentCell = dgvEditField[2, 0];
+                    dgvEditField.CurrentCell = dgvEditField[2, 0];                
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Data Grid Cell End Edit Event: Sets the EditItem value
         /// </summary>
@@ -78,14 +76,14 @@ namespace HL7_Analyst
         {
             try
             {
-                var id = dgvEditField["chID", e.RowIndex].Value.ToString();
+                string id = dgvEditField["chID", e.RowIndex].Value.ToString();
                 string v;
                 if (dgvEditField["chValue", e.RowIndex].Value != null)
                     v = dgvEditField["chValue", e.RowIndex].Value.ToString();
                 else
                     v = "";
 
-                var item = Items.Find(delegate(EditItem i) { return i.ComponentID == id; });
+                EditItem item = Items.Find(delegate(EditItem i) { return i.ComponentID == id; });
                 Items.Remove(item);
                 item.NewValue = v;
                 Items.Add(item);
@@ -95,7 +93,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Edit Current Checked Changed Event: Sets the public method EditAllMessages.
         /// </summary>

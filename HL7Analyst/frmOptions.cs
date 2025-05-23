@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Options Form
@@ -35,7 +31,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Form Load Event: Sets up current settings and displays them.
         /// </summary>
@@ -45,13 +40,13 @@ namespace HL7_Analyst
         {
             try
             {
-                var s = new Settings();
+                Settings s = new Settings();
                 s.GetSettings();
                 cbHideEmpty.Checked = s.HideEmptyFields;
                 cbCheckForUpdates.Checked = s.CheckForUpdates;
                 txtSearchPath.Text = s.SearchPath;
                 txtDefaultSegment.Text = s.DefaultSegment.ToString();
-                foreach (var ext in s.Extensions)
+                foreach (string ext in s.Extensions)
                     txtExtensions.Text += ext + "\r\n";
             }
             catch (Exception ex)
@@ -59,7 +54,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Search Path Button Click Event: Displays an folder browser dialog and sets the search path textbox to the selected folder.
         /// </summary>
@@ -69,7 +63,7 @@ namespace HL7_Analyst
         {
             try
             {
-                var dr = fbSearchPath.ShowDialog();
+                DialogResult dr = fbSearchPath.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
@@ -81,7 +75,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Closes the form.
         /// </summary>
@@ -89,9 +82,8 @@ namespace HL7_Analyst
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
-
         /// <summary>
         /// Saves the settings changes that were made
         /// </summary>
@@ -101,22 +93,22 @@ namespace HL7_Analyst
         {
             try
             {
-                var s = new Settings();
+                Settings s = new Settings();
                 s.HideEmptyFields = cbHideEmpty.Checked;
                 s.CheckForUpdates = cbCheckForUpdates.Checked;
                 s.SearchPath = txtSearchPath.Text;
                 s.Extensions = new List<string>();
                 s.DefaultSegment = Settings.ConvertToSegments(txtDefaultSegment.Text);
-                var exts = txtExtensions.Text.Split(new[] {"\r", "\n"}, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var ext in exts)
+                string[] exts = txtExtensions.Text.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string ext in exts)
                     s.Extensions.Add(ext);
                 s.SaveSettings();
-                Close();
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
-        }
+        }                
     }
 }

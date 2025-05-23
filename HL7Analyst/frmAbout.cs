@@ -13,17 +13,12 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
-using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
-using HL7Analyst.Properties;
+using System.Diagnostics;
+using System;
+using System.IO;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// About Form, displays copyright, version, and additional application information.
@@ -35,29 +30,26 @@ namespace HL7_Analyst
         /// </summary>
         public frmAbout()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
-
         /// <summary>
         /// Form Load Event: Sets text displays
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void frmAbout_Load(object sender, EventArgs e)
+        private void frmAbout_Load(object sender, System.EventArgs e)
         {
             try
             {
-                lblCopyright.Text = string.Format("Copyright {0} Jeremy Reagan, All Rights Reserved.", 2011);
-                lblVersion.Text = string.Format("Version {0}", Application.ProductVersion);
-                txtNotice.Text =
-                    "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; under version 2 of the License.\r\n\r\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.";
+                lblCopyright.Text = String.Format("Copyright {0} Jeremy Reagan, All Rights Reserved.", 2011);
+                lblVersion.Text = String.Format("Version {0}", Application.ProductVersion);
+                txtNotice.Text = "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; under version 2 of the License.\r\n\r\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.";
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Link Label Click Event: Calls default internet browser to navigate to link site.
         /// </summary>
@@ -68,13 +60,12 @@ namespace HL7_Analyst
             try
             {
                 Process.Start("http://www.famfamfam.com/lab/icons/silk");
-            }
+            }                
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Link Label Click Event: Calls default internet browser to navigate to link site.
         /// </summary>
@@ -91,7 +82,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Link Label Click Event: Calls default internet browser to navigate to link site.
         /// </summary>
@@ -108,7 +98,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// License Button Click Event: Currently Does Nothing.
         /// </summary>
@@ -118,18 +107,16 @@ namespace HL7_Analyst
         {
             try
             {
-                var path = Path.Combine(Application.StartupPath, "License.txt");
+                string path = Path.Combine(Application.StartupPath, "License.txt");
                 if (File.Exists(path))
                 {
                     Process.Start(path);
                 }
                 else
                 {
-                    using (var sw = new StreamWriter(path))
-                    {
-                        sw.Write(Resources.License);
-                        sw.Close();
-                    }
+                    StreamWriter sw = new StreamWriter(path);
+                    sw.Write(HL7Analyst.Properties.Resources.License);
+                    sw.Close();
                     Process.Start(path);
                 }
             }

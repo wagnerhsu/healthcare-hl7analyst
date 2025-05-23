@@ -13,21 +13,17 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Filter Form: Displays the select list view items and their current values and allows you to change the filter values.
     /// </summary>
     public partial class frmFilter : Form
-    {
+    {        
         /// <summary>
         /// Initialization Method: Takes a list of list view items and displays them
         /// </summary>
@@ -37,10 +33,10 @@ namespace HL7_Analyst
             InitializeComponent();
             try
             {
-                foreach (var lvi in lvis)
+                foreach (ListViewItem lvi in lvis)
                 {
-                    var objs = new List<object>();
-                    for (var i = 0; i < lvi.SubItems.Count; i++)
+                    List<object> objs = new List<object>();
+                    for (int i = 0; i < lvi.SubItems.Count; i++)
                     {
                         objs.Add(lvi.SubItems[i].Text);
                     }

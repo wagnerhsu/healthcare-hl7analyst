@@ -13,8 +13,6 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,40 +21,33 @@ using System.Windows.Forms;
 using System.Xml;
 using HL7Lib.Base;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Settings Class: Used to get settings from the disk and store them for use.
     /// </summary>
-    internal class Settings
+    class Settings
     {
         /// <summary>
         /// HideEmptyFields boolean property, used to determine if Empty HL7 Fields should be hidden by default
         /// </summary>
         public bool HideEmptyFields { get; set; }
-
         /// <summary>
         /// Extensions List property, used to setup default file extensions for opening files and searching
         /// </summary>
         public List<string> Extensions { get; set; }
-
         /// <summary>
         /// SearchPath string property, used to set the default search path folder
         /// </summary>
         public string SearchPath { get; set; }
-
         /// <summary>
         /// DefaultSegment Segments property, used to set the default segment selected in the Build Search Query form
         /// </summary>
         public Segments DefaultSegment { get; set; }
-
         /// <summary>
         /// CheckForUpdates, used to allow update checking at application start.
         /// </summary>
         public bool CheckForUpdates { get; set; }
-
         /// <summary>
         /// Pulls the settings from disk and sets the above properties
         /// </summary>
@@ -66,9 +57,9 @@ namespace HL7_Analyst
             {
                 Extensions = new List<string>();
                 HideEmptyFields = false;
-                var xtr = new XmlTextReader(Path.Combine(Application.StartupPath, "Settings.xml"));
+                XmlTextReader xtr = new XmlTextReader(Path.Combine(Application.StartupPath, "Settings.xml"));
                 xtr.Read();
-                var xDoc = new XmlDocument();
+                XmlDocument xDoc = new XmlDocument();
                 xDoc.Load(xtr);
 
                 if (xDoc.SelectSingleNode("Settings/HideEmptyFields") != null)
@@ -89,14 +80,14 @@ namespace HL7_Analyst
                     DefaultSegment = Segments.PID;
                 if (xDoc.SelectSingleNode("Settings/FileExtensions") != null)
                 {
-                    var extensionList = xDoc.SelectNodes("Settings/FileExtensions/Extension");
+                    XmlNodeList extensionList = xDoc.SelectNodes("Settings/FileExtensions/Extension");
                     foreach (XmlNode ext in extensionList)
                     {
                         Extensions.Add(ext.InnerText);
                     }
                 }
                 else
-                {
+                {                    
                     Extensions.Add("txt");
                     Extensions.Add("hl7");
                 }
@@ -113,13 +104,12 @@ namespace HL7_Analyst
                 SaveSettings();
             }
         }
-
         /// <summary>
         /// Saves settings to disk
         /// </summary>
         public void SaveSettings()
         {
-            var xtw = new XmlTextWriter(Path.Combine(Application.StartupPath, "Settings.xml"), Encoding.UTF8);
+            XmlTextWriter xtw = new XmlTextWriter(Path.Combine(Application.StartupPath, "Settings.xml"), Encoding.UTF8);
             xtw.WriteStartDocument();
             xtw.WriteStartElement("Settings");
             xtw.WriteStartElement("HideEmptyFields");
@@ -135,7 +125,7 @@ namespace HL7_Analyst
             xtw.WriteString(DefaultSegment.ToString());
             xtw.WriteEndElement();
             xtw.WriteStartElement("FileExtensions");
-            foreach (var ext in Extensions)
+            foreach (string ext in Extensions)
             {
                 xtw.WriteStartElement("Extension");
                 xtw.WriteString(ext);
@@ -145,7 +135,6 @@ namespace HL7_Analyst
             xtw.WriteEndElement();
             xtw.Close();
         }
-
         /// <summary>
         /// Converts the specified string to a Segments enum
         /// </summary>
@@ -153,8 +142,8 @@ namespace HL7_Analyst
         /// <returns>The Segments enum</returns>
         public static Segments ConvertToSegments(string Seg)
         {
-            var returnSeg = new Segments();
-            foreach (Segments s in Enum.GetValues(typeof (Segments)))
+            Segments returnSeg = new Segments();
+            foreach (Segments s in Enum.GetValues(typeof(Segments)))
             {
                 if (s.ToString() == Seg.ToUpper())
                 {

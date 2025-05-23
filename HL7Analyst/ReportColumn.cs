@@ -13,18 +13,17 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// ReportColumn Class: Used to create a report column item
     /// </summary>
-    internal class ReportColumn
+    class ReportColumn
     {
         /// <summary>
         /// The Name of the ReportColumn
         /// </summary>
         public string Name { get; set; }
-
         /// <summary>
         /// The Header of the ReportColumn
         /// </summary>

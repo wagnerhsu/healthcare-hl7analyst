@@ -13,7 +13,7 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     partial class frmSearch
     {
@@ -65,10 +65,9 @@ namespace HL7_Analyst
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 11);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 17);
+            this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Search Terms:";
             // 
@@ -76,21 +75,17 @@ namespace HL7_Analyst
             // 
             this.txtSearchTerms.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.txtSearchTerms.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.txtSearchTerms.Location = new System.Drawing.Point(125, 7);
-            this.txtSearchTerms.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSearchTerms.Location = new System.Drawing.Point(94, 6);
             this.txtSearchTerms.Name = "txtSearchTerms";
-            this.txtSearchTerms.Size = new System.Drawing.Size(644, 22);
+            this.txtSearchTerms.Size = new System.Drawing.Size(484, 20);
             this.txtSearchTerms.TabIndex = 0;
             this.txtSearchTerms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchTerms_KeyDown);
             // 
             // txtSearchPath
             // 
-            this.txtSearchPath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.txtSearchPath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-            this.txtSearchPath.Location = new System.Drawing.Point(125, 39);
-            this.txtSearchPath.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSearchPath.Location = new System.Drawing.Point(94, 32);
             this.txtSearchPath.Name = "txtSearchPath";
-            this.txtSearchPath.Size = new System.Drawing.Size(644, 22);
+            this.txtSearchPath.Size = new System.Drawing.Size(484, 20);
             this.txtSearchPath.TabIndex = 2;
             this.txtSearchPath.TextChanged += new System.EventHandler(this.txtSearchPath_TextChanged);
             this.txtSearchPath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchTerms_KeyDown);
@@ -98,19 +93,17 @@ namespace HL7_Analyst
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 43);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(12, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 17);
+            this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Search Path:";
             // 
             // btnSearchPath
             // 
-            this.btnSearchPath.Location = new System.Drawing.Point(779, 37);
-            this.btnSearchPath.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSearchPath.Location = new System.Drawing.Point(584, 30);
             this.btnSearchPath.Name = "btnSearchPath";
-            this.btnSearchPath.Size = new System.Drawing.Size(31, 28);
+            this.btnSearchPath.Size = new System.Drawing.Size(23, 23);
             this.btnSearchPath.TabIndex = 3;
             this.btnSearchPath.Text = "::";
             this.btnSearchPath.UseVisualStyleBackColor = true;
@@ -120,10 +113,9 @@ namespace HL7_Analyst
             // cbSearchAll
             // 
             this.cbSearchAll.AutoSize = true;
-            this.cbSearchAll.Location = new System.Drawing.Point(632, 71);
-            this.cbSearchAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbSearchAll.Location = new System.Drawing.Point(474, 58);
             this.cbSearchAll.Name = "cbSearchAll";
-            this.cbSearchAll.Size = new System.Drawing.Size(175, 21);
+            this.cbSearchAll.Size = new System.Drawing.Size(133, 17);
             this.cbSearchAll.TabIndex = 4;
             this.cbSearchAll.Text = "Search All Sub-Folders";
             this.cbSearchAll.UseVisualStyleBackColor = true;
@@ -134,29 +126,26 @@ namespace HL7_Analyst
             // 
             this.clbSubFolders.CheckOnClick = true;
             this.clbSubFolders.FormattingEnabled = true;
-            this.clbSubFolders.Location = new System.Drawing.Point(20, 92);
-            this.clbSubFolders.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.clbSubFolders.Location = new System.Drawing.Point(15, 75);
             this.clbSubFolders.Name = "clbSubFolders";
-            this.clbSubFolders.Size = new System.Drawing.Size(788, 225);
+            this.clbSubFolders.Size = new System.Drawing.Size(592, 184);
             this.clbSubFolders.TabIndex = 5;
             this.clbSubFolders.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearchTerms_KeyDown);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 73);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(12, 59);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(85, 17);
+            this.label3.Size = new System.Drawing.Size(63, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Sub-Folders";
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(601, 354);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSearch.Location = new System.Drawing.Point(451, 288);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(100, 28);
+            this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 6;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -165,10 +154,9 @@ namespace HL7_Analyst
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(709, 354);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCancel.Location = new System.Drawing.Point(532, 288);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 28);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -178,47 +166,42 @@ namespace HL7_Analyst
             // lblCurrentFile
             // 
             this.lblCurrentFile.AutoSize = true;
-            this.lblCurrentFile.Location = new System.Drawing.Point(108, 322);
-            this.lblCurrentFile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCurrentFile.Location = new System.Drawing.Point(81, 262);
             this.lblCurrentFile.Name = "lblCurrentFile";
-            this.lblCurrentFile.Size = new System.Drawing.Size(0, 17);
+            this.lblCurrentFile.Size = new System.Drawing.Size(0, 13);
             this.lblCurrentFile.TabIndex = 10;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 322);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(12, 262);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(85, 17);
+            this.label4.Size = new System.Drawing.Size(63, 13);
             this.label4.TabIndex = 11;
             this.label4.Text = "Current File:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(16, 361);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(12, 293);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(109, 17);
+            this.label5.Size = new System.Drawing.Size(84, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Matches Found:";
             // 
             // lblMatchCount
             // 
             this.lblMatchCount.AutoSize = true;
-            this.lblMatchCount.Location = new System.Drawing.Point(136, 361);
-            this.lblMatchCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMatchCount.Location = new System.Drawing.Point(102, 293);
             this.lblMatchCount.Name = "lblMatchCount";
-            this.lblMatchCount.Size = new System.Drawing.Size(0, 17);
+            this.lblMatchCount.Size = new System.Drawing.Size(0, 13);
             this.lblMatchCount.TabIndex = 13;
             // 
             // btnComponents
             // 
-            this.btnComponents.Location = new System.Drawing.Point(779, 5);
-            this.btnComponents.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnComponents.Location = new System.Drawing.Point(584, 4);
             this.btnComponents.Name = "btnComponents";
-            this.btnComponents.Size = new System.Drawing.Size(31, 28);
+            this.btnComponents.Size = new System.Drawing.Size(23, 23);
             this.btnComponents.TabIndex = 1;
             this.btnComponents.Text = "::";
             this.btnComponents.UseVisualStyleBackColor = true;
@@ -227,9 +210,9 @@ namespace HL7_Analyst
             // 
             // frmSearch
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 389);
+            this.ClientSize = new System.Drawing.Size(619, 316);
             this.Controls.Add(this.btnComponents);
             this.Controls.Add(this.lblMatchCount);
             this.Controls.Add(this.label5);
@@ -247,7 +230,6 @@ namespace HL7_Analyst
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "frmSearch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search for Files";

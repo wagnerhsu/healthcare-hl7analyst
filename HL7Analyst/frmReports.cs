@@ -13,27 +13,27 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Windows.Forms;
 using HL7Lib.Base;
+using System.ComponentModel;
+using System.IO;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Reports Form: Displays selected report values in a data grid.
     /// </summary>
     public partial class frmReports : Form
     {
-        private readonly List<string> _messages = new List<string>();
-        private readonly string _reportName = "";
+        List<string> Messages = new List<string>();
+        string ReportName = "";
 
+        private delegate void AddColumnsDelegate(ReportColumn columnName);
+        private delegate void AddRowsDelegate(List<object> objs);
+        private delegate void UpdateFormTextDelegate(string s);
+        private delegate void UpdateFormCursorDelegate(Cursor c);
         /// <summary>
         /// Initialization Method: Sets the messages and report name at runtime
         /// </summary>
@@ -42,20 +42,11 @@ namespace HL7_Analyst
         public frmReports(List<string> Msgs, string RN)
         {
             InitializeComponent();
-            _messages = Msgs;
-            _reportName = RN;
+            Messages = Msgs;
+            ReportName = RN;
         }
 
-        private delegate void AddColumnsDelegate(ReportColumn columnName);
-
-        private delegate void AddRowsDelegate(List<object> objs);
-
-        private delegate void UpdateFormTextDelegate(string s);
-
-        private delegate void UpdateFormCursorDelegate(Cursor c);
-
         #region Cross Thread Invoke Methods
-
         /// <summary>
         /// Adds columns to the data grid
         /// </summary>
@@ -78,7 +69,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Adds rows to the data grid
         /// </summary>
@@ -100,7 +90,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Updates the forms title text
         /// </summary>
@@ -109,12 +98,12 @@ namespace HL7_Analyst
         {
             try
             {
-                if (IsHandleCreated)
+                if (this.IsHandleCreated)
                 {
-                    if (InvokeRequired)
-                        Invoke(new UpdateFormTextDelegate(UpdateFormText), s);
+                    if (this.InvokeRequired)
+                        this.Invoke(new UpdateFormTextDelegate(UpdateFormText), s);
                     else
-                        Text = s;
+                        this.Text = s;
                 }
             }
             catch (Exception ex)
@@ -122,7 +111,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Updates the forms cursor to the specified cursor
         /// </summary>
@@ -131,12 +119,12 @@ namespace HL7_Analyst
         {
             try
             {
-                if (IsHandleCreated)
+                if (this.IsHandleCreated)
                 {
-                    if (InvokeRequired)
-                        Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
+                    if (this.InvokeRequired)
+                        this.Invoke(new UpdateFormCursorDelegate(UpdateFormCursor), c);
                     else
-                        Cursor = c;
+                        this.Cursor = c;
                 }
             }
             catch (Exception ex)
@@ -144,11 +132,9 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         #endregion
 
         #region Event Handlers
-
         /// <summary>
         /// Form load event: Sets up background worker.
         /// </summary>
@@ -158,9 +144,9 @@ namespace HL7_Analyst
         {
             try
             {
-                Text = "Report - " + _reportName;
-                var bgw = new BackgroundWorker();
-                bgw.DoWork += bgw_DoWork;
+                this.Text = "Report - " + ReportName;
+                BackgroundWorker bgw = new BackgroundWorker();
+                bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
                 bgw.RunWorkerAsync();
             }
             catch (Exception ex)
@@ -168,31 +154,30 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Background Worker Do Work Event: Adds the reports rows to the data grid
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 UpdateFormCursor(Cursors.WaitCursor);
-                var r = new Reports();
-                r.LoadReport(_reportName, _messages);
-                foreach (var rc in r.Columns)
+                Reports r = new Reports();
+                r.LoadReport(ReportName, Messages);
+                foreach (ReportColumn rc in r.Columns)
                     AddColumns(rc);
-                for (var i = 0; i < r.Items.Count; i++)
+                for (int i = 0; i < r.Items.Count; i++)
                 {
-                    var objs = new List<object>();
-                    for (var x = 0; x < r.Items[i].Count; x++)
+                    List<object> objs = new List<object>();
+                    for (int x = 0; x < r.Items[i].Count; x++)
                     {
                         objs.Add(FormatItem(r.Items[i][x]));
                     }
                     AddRows(objs);
                 }
-                UpdateFormText(string.Format("Reports - {0} - {1} Records Displayed", _reportName, r.Items.Count));
+                UpdateFormText(String.Format("Reports - {0} - {1} Records Displayed", ReportName, r.Items.Count));
                 UpdateFormCursor(Cursors.Default);
             }
             catch (Exception ex)
@@ -200,7 +185,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Opens a save file dialog and passes the selected file name to the SaveReport method.
         /// </summary>
@@ -217,7 +201,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Data Grid View Report Items Key Down Event: Sets up shortcut key support for saving the report.
         /// </summary>
@@ -244,11 +227,9 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         #endregion
 
         #region Private Methods
-
         /// <summary>
         /// FormatItem Method: Formats the value string for display
         /// </summary>
@@ -259,7 +240,7 @@ namespace HL7_Analyst
             try
             {
                 object returnObj;
-                var d = item.FromHl7Date();
+                Nullable<DateTime> d = item.FromHL7Date();
                 if (d != null)
                     returnObj = d.Value.ToString("MM/dd/yyyy HH:mm:ss");
                 else
@@ -269,10 +250,9 @@ namespace HL7_Analyst
             }
             catch (Exception)
             {
-                return item;
+                return (object)item;
             }
         }
-
         /// <summary>
         /// Saves the report to disk
         /// </summary>        
@@ -280,33 +260,32 @@ namespace HL7_Analyst
         {
             try
             {
-                var dr = sfdSaveReport.ShowDialog();
+                 DialogResult dr = sfdSaveReport.ShowDialog();
 
-                if (dr == DialogResult.OK)
-                {
-                    var sw = new StreamWriter(sfdSaveReport.FileName);
-                    foreach (DataGridViewColumn column in dgvReportItems.Columns)
-                    {
-                        sw.Write("{0},", column.HeaderText);
-                    }
-                    sw.Write("\r\n");
-                    foreach (DataGridViewRow row in dgvReportItems.Rows)
-                    {
-                        foreach (DataGridViewCell cell in row.Cells)
-                        {
-                            sw.Write("\"{0}\",", cell.Value);
-                        }
-                        sw.Write("\r\n");
-                    }
-                    sw.Close();
-                }
+                 if (dr == DialogResult.OK)
+                 {
+                     StreamWriter sw = new StreamWriter(sfdSaveReport.FileName);
+                     foreach (DataGridViewColumn column in dgvReportItems.Columns)
+                     {
+                         sw.Write(String.Format("{0},", column.HeaderText));
+                     }
+                     sw.Write("\r\n");
+                     foreach (DataGridViewRow row in dgvReportItems.Rows)
+                     {
+                         foreach (DataGridViewCell cell in row.Cells)
+                         {
+                             sw.Write(String.Format("\"{0}\",", cell.Value));
+                         }
+                         sw.Write("\r\n");
+                     }
+                     sw.Close();
+                 }
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
-            }
+            }        
         }
-
-        #endregion
+        #endregion        
     }
 }

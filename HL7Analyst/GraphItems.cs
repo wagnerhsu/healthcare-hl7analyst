@@ -13,13 +13,12 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// GraphItems Class: Used to store information about each graph item used in the graphs.
@@ -27,42 +26,36 @@ namespace HL7_Analyst
     public class GraphItems
     {
         /// <summary>
-        /// Empty constructor
-        /// </summary>
-        public GraphItems()
-        {
-        }
-
-        /// <summary>
-        /// GraphItem constructor
-        /// </summary>
-        /// <param name="name">The name to assign to the GraphItem</param>
-        /// <param name="count">The value to assign to the GraphItem</param>
-        public GraphItems(string name, int count)
-        {
-            Name = name;
-            Count = count;
-        }
-
-        /// <summary>
         /// The Name of the item
         /// </summary>
         public string Name { get; set; }
-
         /// <summary>
         /// The Count of items with the specified name
         /// </summary>
         public int Count { get; set; }
-
+        /// <summary>
+        /// Empty constructor
+        /// </summary>
+        public GraphItems() { }
+        /// <summary>
+        /// GraphItem constructor
+        /// </summary>
+        /// <param name="_Name">The name to assign to the GraphItem</param>
+        /// <param name="_Count">The value to assign to the GraphItem</param>
+        public GraphItems(string _Name, int _Count)
+        {
+            Name = _Name;
+            Count = _Count;
+        }
         /// <summary>
         /// Pulls the specified GraphItem from a list
         /// </summary>
         /// <param name="items">The list to search</param>
-        /// <param name="name">The name of the GraphItem to find</param>
+        /// <param name="_Name">The name of the GraphItem to find</param>
         /// <returns>The GraphItem that was found.</returns>
-        public static GraphItems GetGraphItem(List<GraphItems> items, string name)
+        public static GraphItems GetGraphItem(List<GraphItems> items, string _Name)
         {
-            var gi = items.Find(g => g.Name == name);
+            GraphItems gi = items.Find(delegate(GraphItems g) { return g.Name == _Name; });
             return gi;
         }
     }

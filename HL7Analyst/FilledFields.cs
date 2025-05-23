@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HL7Lib.Base;
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// FilledFields class: Used to store calculated information about each non-empty field or component in a message

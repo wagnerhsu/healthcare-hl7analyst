@@ -13,20 +13,16 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
+using System.Text;
+using System;
 using System.Xml.Linq;
+using System.Linq;
+using System.Windows.Forms;
+using System.IO;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// SearchTerm Class: Used to parse a string for search terms
@@ -34,19 +30,24 @@ namespace HL7_Analyst
     public class SearchTerm
     {
         /// <summary>
+        /// The ID of the search term
+        /// </summary>
+        public string ID { get; set; }
+        /// <summary>
+        /// The Value of the search term
+        /// </summary>
+        public string Value { get; set; }
+        /// <summary>
         /// Empty Constructor
         /// </summary>
-        public SearchTerm()
-        {
-        }
-
+        public SearchTerm() { }
         /// <summary>
         /// SearchTerm Constructor
         /// </summary>
         /// <param name="term"></param>
         public SearchTerm(string term)
         {
-            var st = GetSearchTerm(term);
+            SearchTerm st = GetSearchTerm(term);
             if (st != null)
             {
                 ID = st.ID;
@@ -58,17 +59,6 @@ namespace HL7_Analyst
                 Value = "";
             }
         }
-
-        /// <summary>
-        /// The ID of the search term
-        /// </summary>
-        public string ID { get; set; }
-
-        /// <summary>
-        /// The Value of the search term
-        /// </summary>
-        public string Value { get; set; }
-
         /// <summary>
         /// Gets the search term from the specified search string
         /// </summary>
@@ -76,11 +66,11 @@ namespace HL7_Analyst
         /// <returns>Returns the SearchTerm</returns>
         public static SearchTerm GetSearchTerm(string term)
         {
-            var st = new SearchTerm();
+            SearchTerm st = new SearchTerm();
             if (term.Contains("]"))
             {
-                var idReg = new Regex("(?<=\\[)[A-Za-z0-9]+-[0-9]+.[0-9]+(?=\\])");
-                var idMatch = idReg.Match(term);
+                Regex idReg = new Regex("(?<=\\[)[A-Za-z0-9]+-[0-9]+.[0-9]+(?=\\])");
+                Match idMatch = idReg.Match(term);
                 st.ID = idMatch.Value;
                 st.Value = idReg.Replace(term, "");
                 st.Value = st.Value.Replace("[", "");
@@ -88,7 +78,6 @@ namespace HL7_Analyst
             }
             return st;
         }
-
         /// <summary>
         /// Builds a list of SearchTerms from a string array
         /// </summary>
@@ -96,15 +85,14 @@ namespace HL7_Analyst
         /// <returns>A list of SearchTerms</returns>
         public static List<SearchTerm> GetSearchTerms(string[] terms)
         {
-            var returnValue = new List<SearchTerm>();
-            foreach (var term in terms)
+            List<SearchTerm> returnValue = new List<SearchTerm>();
+            foreach (string term in terms)
             {
-                var st = GetSearchTerm(term);
+                SearchTerm st = GetSearchTerm(term);
                 returnValue.Add(st);
             }
             return returnValue;
         }
-
         /// <summary>
         /// Gets the search terms from a string of search terms
         /// </summary>
@@ -112,15 +100,15 @@ namespace HL7_Analyst
         /// <returns>The double list of search terms and search term groups</returns>
         public static List<List<SearchTerm>> GetSearchTerms(string terms)
         {
-            var returnValue = new List<List<SearchTerm>>();
+            List<List<SearchTerm>> returnValue = new List<List<SearchTerm>>();
             if (terms.Length > 0)
             {
-                foreach (var term in terms.Split('|'))
+                foreach (string term in terms.Split('|'))
                 {
-                    var searchGroup = new List<SearchTerm>();
-                    foreach (var t in term.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries))
+                    List<SearchTerm> searchGroup = new List<SearchTerm>();
+                    foreach (string t in term.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        var st = GetSearchTerm(t);
+                        SearchTerm st = GetSearchTerm(t);
                         searchGroup.Add(st);
                     }
                     returnValue.Add(searchGroup);
@@ -132,7 +120,6 @@ namespace HL7_Analyst
             }
             return returnValue;
         }
-
         /// <summary>
         /// Takes a list of search terms and builds a string representation of them
         /// </summary>
@@ -140,16 +127,15 @@ namespace HL7_Analyst
         /// <returns>The string of search terms</returns>
         public static string BuildSearchQueryString(List<SearchTerm> terms)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            foreach (var term in terms)
+            foreach (SearchTerm term in terms)
             {
                 sb.AppendFormat(" [{0}]{1}", term.ID, term.Value);
             }
 
             return sb.ToString().Trim();
         }
-
         /// <summary>
         /// Takes a list of search terms and builds a string representation of them
         /// </summary>
@@ -157,10 +143,10 @@ namespace HL7_Analyst
         /// <returns>The string of search terms</returns>
         public static string BuildSearchQueryString(List<List<SearchTerm>> terms)
         {
-            var sb = new StringBuilder();
-            foreach (var list in terms)
+            StringBuilder sb = new StringBuilder();
+            foreach (List<SearchTerm> list in terms)
             {
-                foreach (var term in list)
+                foreach (SearchTerm term in list)
                 {
                     sb.AppendFormat(" [{0}]{1}", term.ID, term.Value);
                 }
@@ -169,38 +155,39 @@ namespace HL7_Analyst
             }
             return sb.ToString().Trim();
         }
-
         /// <summary>
         /// Pulls the previous searches from disk for autocomplete in the search terms box
         /// </summary>
         /// <returns>Returns the list of previously ran searches</returns>
         public static List<string> PullPreviousQueries()
         {
-            var rootPath = Path.Combine(Application.StartupPath, "Previous Queries.xml");
+            string rootPath = Path.Combine(Application.StartupPath, "Previous Queries.xml");
             if (File.Exists(rootPath))
             {
-                var items = new List<string>();
-                var xDoc = XDocument.Load(rootPath);
-                var list = from x in xDoc.Descendants("Query") select new {item = x.Value};
+                List<string> items = new List<string>();
+                XDocument xDoc = XDocument.Load(rootPath);
+                var list = from x in xDoc.Descendants("Query") select new { item = x.Value };
                 foreach (var l in list)
                     items.Add(l.item.Trim());
                 return items;
             }
-            return new List<string>();
+            else
+            {
+                return new List<string>();
+            }
         }
-
         /// <summary>
         /// Saves the list of previous ran searches
         /// </summary>
         /// <param name="list">The list of previously ran search queries</param>
         public static void SavePreviousQueries(List<string> list)
         {
-            var rootPath = Path.Combine(Application.StartupPath, "Previous Queries.xml");
-            var rootElement = new XElement("Searches");
-            foreach (var l in list)
+            string rootPath = Path.Combine(Application.StartupPath, "Previous Queries.xml");
+            XElement rootElement = new XElement("Searches");
+            foreach (string l in list)
             {
-                var element = new XElement("Query");
-                var cdata = new XCData(l);
+                XElement element = new XElement("Query");
+                XCData cdata = new XCData(l);
                 element.Add(cdata);
                 rootElement.Add(element);
             }

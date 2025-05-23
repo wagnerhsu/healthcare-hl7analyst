@@ -13,8 +13,6 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,23 +21,20 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// TCPIPOtions Class: Used to create a TCPIP Options object and perform operations on it.
     /// </summary>
     public class TCPIPOptions
     {
-        private static readonly string rootPath = Path.Combine(Application.StartupPath, "TCPIP");
+        private static string rootPath = Path.Combine(Application.StartupPath, "TCPIP");
         private IPAddress _HostAddress = IPAddress.Parse("127.0.0.1");
-        private string _LLPHeader = LLP.GetLlpString("[0x0B]");
-        private string _LLPTrailer = LLP.GetLlpString("[0x1C][0x0D]");
         private int _Port = 4200;
-        private bool _SendAck = true;
+        private string _LLPHeader = LLP.GetLLPString("[0x0B]");
+        private string _LLPTrailer = LLP.GetLLPString("[0x1C][0x0D]");
         private bool _WaitForAck = true;
-
+        private bool _SendAck = true;
         /// <summary>
         /// The Host Address of this TCP/IP Object
         /// </summary>
@@ -48,7 +43,6 @@ namespace HL7_Analyst
             get { return _HostAddress; }
             set { _HostAddress = value; }
         }
-
         /// <summary>
         /// The Port of this TCP/IP Object
         /// </summary>
@@ -57,7 +51,6 @@ namespace HL7_Analyst
             get { return _Port; }
             set { _Port = value; }
         }
-
         /// <summary>
         /// The LLP Header character(s) to use for this TCP/IP Object
         /// </summary>
@@ -66,7 +59,6 @@ namespace HL7_Analyst
             get { return _LLPHeader; }
             set { _LLPHeader = value; }
         }
-
         /// <summary>
         /// The LLP Trailer character(s) to use for this TCP/IP Object
         /// </summary>
@@ -75,7 +67,6 @@ namespace HL7_Analyst
             get { return _LLPTrailer; }
             set { _LLPTrailer = value; }
         }
-
         /// <summary>
         /// The Wait for Ack option for this TCP/IP Object, used to determine if an ack should be waited for before sending the next message.
         /// </summary>
@@ -84,7 +75,6 @@ namespace HL7_Analyst
             get { return _WaitForAck; }
             set { _WaitForAck = value; }
         }
-
         /// <summary>
         /// The Send Ack option for this TCP/IP Object, used to determine if an ack should be sent for each received message.
         /// </summary>
@@ -93,7 +83,6 @@ namespace HL7_Analyst
             get { return _SendAck; }
             set { _SendAck = value; }
         }
-
         /// <summary>
         /// Pulls all TCP/IP Connection files from disk.
         /// </summary>
@@ -102,18 +91,20 @@ namespace HL7_Analyst
         {
             if (Directory.Exists(rootPath))
             {
-                var sl = new List<string>();
-                foreach (var f in Directory.GetFiles(rootPath, "*.xml", SearchOption.TopDirectoryOnly))
+                List<string> sl = new List<string>();
+                foreach (string f in Directory.GetFiles(rootPath, "*.xml", SearchOption.TopDirectoryOnly))
                 {
-                    var fi = new FileInfo(f);
+                    FileInfo fi = new FileInfo(f);
                     sl.Add(fi.Name.Replace(fi.Extension, ""));
                 }
                 return sl;
             }
-            Directory.CreateDirectory(rootPath);
-            return new List<string>();
+            else
+            {
+                Directory.CreateDirectory(rootPath);
+                return new List<string>();
+            }
         }
-
         /// <summary>
         /// Loads a specific TCP/IP Options file from disk
         /// </summary>
@@ -121,16 +112,16 @@ namespace HL7_Analyst
         /// <returns>The TCPIPOptions object created from the file</returns>
         public static TCPIPOptions Load(string OptionsFile)
         {
-            var xtr = new XmlTextReader(Path.Combine(rootPath, OptionsFile + ".xml"));
+            XmlTextReader xtr = new XmlTextReader(Path.Combine(rootPath, OptionsFile + ".xml"));
             xtr.Read();
-            var xDoc = new XmlDocument();
+            XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xtr);
 
-            var ops = new TCPIPOptions();
+            TCPIPOptions ops = new TCPIPOptions();
             if (xDoc.SelectSingleNode("TCPIPOptions/HostAddress") != null)
                 ops.HostAddress = IPAddress.Parse(xDoc.SelectSingleNode("TCPIPOptions/HostAddress").InnerText);
             if (xDoc.SelectSingleNode("TCPIPOptions/Port") != null)
-                ops.Port = int.Parse(xDoc.SelectSingleNode("TCPIPOptions/Port").InnerText);
+                ops.Port = Int32.Parse(xDoc.SelectSingleNode("TCPIPOptions/Port").InnerText);
             if (xDoc.SelectSingleNode("TCPIPOptions/LLPHeader") != null)
                 ops.LLPHeader = xDoc.SelectSingleNode("TCPIPOptions/LLPHeader").InnerText;
             if (xDoc.SelectSingleNode("TCPIPOptions/LLPTrailer") != null)
@@ -142,43 +133,38 @@ namespace HL7_Analyst
             xtr.Close();
             return ops;
         }
-
         /// <summary>
         /// Saves the specified connections to disk
         /// </summary>
-        /// <param name="optionsFile">The File name to use</param>
-        /// <param name="options">The TCP/IP Connections to use</param>
-        public static void Save(string optionsFile, TCPIPOptions options)
+        /// <param name="OptionsFile">The File name to use</param>
+        /// <param name="Options">The TCP/IP Connections to use</param>
+        public static void Save(string OptionsFile, TCPIPOptions Options)
         {
-            var xtw = new XmlTextWriter(Path.Combine(rootPath, Helper.RemoveUnsupportedChars(optionsFile) + ".xml"),
-                Encoding.UTF8);
-            xtw.Formatting = Formatting.Indented;
-
+            XmlTextWriter xtw = new XmlTextWriter(Path.Combine(rootPath, Helper.RemoveUnsupportedChars(OptionsFile) + ".xml"), Encoding.UTF8);
             xtw.WriteStartDocument();
             xtw.WriteStartElement("TCPIPOptions");
             xtw.WriteStartElement("HostAddress");
-            xtw.WriteString(options.HostAddress.ToString());
+            xtw.WriteString(Options.HostAddress.ToString());
             xtw.WriteEndElement();
             xtw.WriteStartElement("Port");
-            xtw.WriteString(options.Port.ToString());
+            xtw.WriteString(Options.Port.ToString());
             xtw.WriteEndElement();
             xtw.WriteStartElement("LLPHeader");
-            xtw.WriteString(options.LLPHeader);
+            xtw.WriteString(Options.LLPHeader);
             xtw.WriteEndElement();
             xtw.WriteStartElement("LLPTrailer");
-            xtw.WriteString(options.LLPTrailer);
+            xtw.WriteString(Options.LLPTrailer);
             xtw.WriteEndElement();
             xtw.WriteStartElement("WaitForAck");
-            xtw.WriteString(options.WaitForAck.ToString());
+            xtw.WriteString(Options.WaitForAck.ToString());
             xtw.WriteEndElement();
             xtw.WriteStartElement("SendAck");
-            xtw.WriteString(options.SendAck.ToString());
+            xtw.WriteString(Options.SendAck.ToString());
             xtw.WriteEndElement();
             xtw.WriteEndElement();
             xtw.WriteEndDocument();
             xtw.Close();
         }
-
         /// <summary>
         /// Deletes a TCP/IP Connection file from disk
         /// </summary>

@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Text;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Database Login Form: Sets up the database connection string object to use for this database connection
@@ -32,7 +28,6 @@ namespace HL7_Analyst
         /// The SQL Connection String built from the information entered into this form
         /// </summary>
         public StringBuilder SQLConnectionString = new StringBuilder();
-
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -40,7 +35,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Authentication Type Selected Index Changed Event: Based on the selected index sets the User Name and Password textboxes to enabled or not-enabled
         /// </summary>
@@ -52,13 +46,14 @@ namespace HL7_Analyst
             {
                 if (cbAuthenticationType.SelectedIndex > -1)
                 {
-                    var enabled = false;
+                    bool enabled = false;
                     if (cbAuthenticationType.SelectedIndex == 0)
                         enabled = false;
                     else
                         enabled = true;
                     txtUserName.Enabled = enabled;
                     txtPassword.Enabled = enabled;
+
                 }
             }
             catch (Exception ex)
@@ -66,7 +61,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Form Load Event: Sets the default selected authentication type
         /// </summary>
@@ -83,7 +77,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Sets up the connection object to pass to the database connection form then closes the form
         /// </summary>
@@ -93,21 +86,19 @@ namespace HL7_Analyst
         {
             try
             {
-                SQLConnectionString.AppendFormat("Data Source={0};Initial Catalog={1};", txtServer.Text,
-                    txtDatabase.Text);
+                SQLConnectionString.AppendFormat("Data Source={0};Initial Catalog={1};", txtServer.Text, txtDatabase.Text);
                 if (cbAuthenticationType.SelectedIndex == 0)
                     SQLConnectionString.AppendFormat("Integrated Security=SSPI;");
                 else
                     SQLConnectionString.AppendFormat("User ID={0};Password={1};", txtUserName.Text, txtPassword.Text);
-                DialogResult = DialogResult.OK;
-                Close();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Closes the form
         /// </summary>
@@ -117,8 +108,8 @@ namespace HL7_Analyst
         {
             try
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             catch (Exception ex)
             {

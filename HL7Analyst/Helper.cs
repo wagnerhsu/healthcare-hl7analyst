@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -13,7 +13,12 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-namespace HL7_Analyst
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace HL7Analyst
 {
     /// <summary>
     /// Helper Class: Provides helper methods
@@ -23,11 +28,11 @@ namespace HL7_Analyst
         /// <summary>
         /// Removes the specified characters from the file name.
         /// </summary>
-        /// <param name="fileName">The File Name to Clean</param>
+        /// <param name="FileName">The File Name to Clean</param>
         /// <returns>The File Name after cleaning unsupported characters from it</returns>
-        public static string RemoveUnsupportedChars(string fileName)
+        public static string RemoveUnsupportedChars(string FileName)
         {
-            var s = fileName;
+            string s = FileName;
             s = s.Replace("\\", "");
             s = s.Replace("/", "");
             s = s.Replace(":", "");

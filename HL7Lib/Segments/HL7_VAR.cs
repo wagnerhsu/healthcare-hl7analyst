@@ -1,20 +1,21 @@
 /***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
-*
+* 
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; under version 2
 * of the License.
-*
+* 
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 ****************************************************************/
 
-using HL7Lib.Base;
+using System;
 using System.Collections.Generic;
+using HL7Lib.Base;
 
 namespace HL7Lib.Segments
 {
@@ -41,7 +42,6 @@ namespace HL7Lib.Segments
             fs.Add(VAR6());
             Fields = fs;
         }
-
         private Field VAR1()
         {
             Field f = new Field("Variance Instance ID");
@@ -53,7 +53,6 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
-
         private Field VAR2()
         {
             Field f = new Field("Documented Date/Time");
@@ -63,7 +62,6 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
-
         private Field VAR3()
         {
             Field f = new Field("Stated Variance Date/Time");
@@ -73,7 +71,6 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
-
         private Field VAR4()
         {
             Field f = new Field("Variance Originator");
@@ -104,7 +101,6 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
-
         private Field VAR5()
         {
             Field f = new Field("Variance Classification");
@@ -118,7 +114,6 @@ namespace HL7Lib.Segments
             f.Components = c;
             return f;
         }
-
         private Field VAR6()
         {
             Field f = new Field("Variance Description");

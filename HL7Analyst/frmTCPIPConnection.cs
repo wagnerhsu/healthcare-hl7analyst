@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Net;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// TCPIP Connection Form: Used to create a new TCP/IP Connection File
@@ -29,15 +25,13 @@ namespace HL7_Analyst
     public partial class frmTCPIPConnection : Form
     {
         /// <summary>
+        /// The TCPIPOptions filled in by the user
+        /// </summary>
+        public TCPIPOptions TCPIPOps = new TCPIPOptions();
+        /// <summary>
         /// The Connection Name entered by the user
         /// </summary>
         public string OptionsName = "";
-
-        /// <summary>
-        /// The TCPIPOptions filled in by the user
-        /// </summary>
-        public TCPIPOptions TcpipOps = new TCPIPOptions();
-
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -45,7 +39,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// Save Button Click Event: Saves the TCP/IP Options to File
         /// </summary>
@@ -55,24 +48,24 @@ namespace HL7_Analyst
         {
             try
             {
-                if (!string.IsNullOrEmpty(txtName.Text))
+                if (!String.IsNullOrEmpty(txtName.Text))
                 {
-                    var ip = ParseHostAddress(txtHostAddress.Text);
-                    var port = ParsePort(txtPort.Text);
+                    IPAddress ip = ParseHostAddress(txtHostAddress.Text);
+                    int port = ParsePort(txtPort.Text);
 
                     if (ip != null)
                     {
                         if (port != 0)
                         {
                             OptionsName = txtName.Text;
-                            TcpipOps.HostAddress = ip;
-                            TcpipOps.Port = port;
-                            TcpipOps.LLPHeader = LLP.GetLlpString(txtHeader.Text);
-                            TcpipOps.LLPTrailer = LLP.GetLlpString(txtTrailer.Text);
-                            TcpipOps.WaitForAck = cbWaitForAck.Checked;
-                            TcpipOps.SendAck = cbSendAck.Checked;
-                            DialogResult = DialogResult.OK;
-                            Close();
+                            TCPIPOps.HostAddress = ip;
+                            TCPIPOps.Port = port;
+                            TCPIPOps.LLPHeader = LLP.GetLLPString(txtHeader.Text);
+                            TCPIPOps.LLPTrailer = LLP.GetLLPString(txtTrailer.Text);
+                            TCPIPOps.WaitForAck = cbWaitForAck.Checked;
+                            TCPIPOps.SendAck = cbSendAck.Checked;
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
                         }
                         else
                         {
@@ -94,7 +87,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Cancels the Dialog Box
         /// </summary>
@@ -104,15 +96,14 @@ namespace HL7_Analyst
         {
             try
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Parses a Host Address from a string
         /// </summary>
@@ -125,7 +116,8 @@ namespace HL7_Analyst
                 IPAddress ip;
                 if (IPAddress.TryParse(s, out ip))
                     return ip;
-                return null;
+                else
+                    return null;
             }
             catch (Exception ex)
             {
@@ -133,7 +125,6 @@ namespace HL7_Analyst
                 return null;
             }
         }
-
         /// <summary>
         /// Parses a port
         /// </summary>
@@ -143,10 +134,11 @@ namespace HL7_Analyst
         {
             try
             {
-                var p = 0;
-                if (int.TryParse(s, out p))
+                int p = 0;
+                if (Int32.TryParse(s, out p))
                     return p;
-                return 0;
+                else
+                    return 0;
             }
             catch (Exception ex)
             {
@@ -154,7 +146,6 @@ namespace HL7_Analyst
                 return 0;
             }
         }
-
         /// <summary>
         /// Loads the LLP form
         /// </summary>
@@ -164,12 +155,12 @@ namespace HL7_Analyst
         {
             try
             {
-                var fl = new frmLLP();
-                var dr = fl.ShowDialog();
+                frmLLP fl = new frmLLP();
+                DialogResult dr = fl.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
-                    foreach (var l in fl.LLPList)
+                    foreach (LLP l in fl.LLPList)
                         txtHeader.Text += l.Hex;
                 }
             }
@@ -178,7 +169,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Loads the LLP Form
         /// </summary>
@@ -188,12 +178,12 @@ namespace HL7_Analyst
         {
             try
             {
-                var fl = new frmLLP();
-                var dr = fl.ShowDialog();
+                frmLLP fl = new frmLLP();
+                DialogResult dr = fl.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
-                    foreach (var l in fl.LLPList)
+                    foreach (LLP l in fl.LLPList)
                         txtTrailer.Text += l.Hex;
                 }
             }

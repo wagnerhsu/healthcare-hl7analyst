@@ -1,4 +1,4 @@
-﻿/***************************************************************
+/***************************************************************
 * Copyright (C) 2011 Jeremy Reagan, All Rights Reserved.
 * I may be reached via email at: jeremy.reagan@live.com
 * 
@@ -13,8 +13,6 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,18 +20,15 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Database Connection Form: Allows the user to build a query to download HL7 messages
     /// </summary>
     public partial class frmDatabaseConnection : Form
     {
-        private string SQLColumn = "";
-        private string SQLConnectionString = "";
-
+        string SQLConnectionString = "";
+        string SQLColumn = "";
         /// <summary>
         /// Initialization Method
         /// </summary>
@@ -41,7 +36,6 @@ namespace HL7_Analyst
         {
             InitializeComponent();
         }
-
         /// <summary>
         /// When the form loads it loads the frmDatabaseLogin form so the user can build a database connection string
         /// </summary>
@@ -51,8 +45,8 @@ namespace HL7_Analyst
         {
             try
             {
-                var fdl = new frmDatabaseLogin();
-                var dr = fdl.ShowDialog();
+                frmDatabaseLogin fdl = new frmDatabaseLogin();
+                DialogResult dr = fdl.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
@@ -61,16 +55,15 @@ namespace HL7_Analyst
                 }
                 else
                 {
-                    DialogResult = DialogResult.Cancel;
-                    Close();
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
                 }
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
-        }
-
+        }        
         /// <summary>
         /// Calls the AddColumns for the selected table
         /// </summary>
@@ -88,7 +81,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Sets the select statement for the selected column
         /// </summary>
@@ -100,19 +92,16 @@ namespace HL7_Analyst
             {
                 if (cbTables.SelectedIndex > -1)
                 {
-                    string[] supportedTypes = {"VARCHAR", "NVARCHAR", "TEXT", "NTEXT", "IMAGE"};
+                    string[] supportedTypes = { "VARCHAR", "NVARCHAR", "TEXT", "NTEXT", "IMAGE" };
                     SQLColumn = dgvColumns["cColumn", e.RowIndex].Value.ToString();
-                    var data_type = dgvColumns["cDataType", e.RowIndex].Value.ToString();
-                    var from = cbTables.SelectedItem.ToString();
+                    string data_type = dgvColumns["cDataType", e.RowIndex].Value.ToString();
+                    string from = cbTables.SelectedItem.ToString();
                     if (supportedTypes.Contains(data_type.ToUpper()))
                     {
                         if (data_type.ToUpper() == "IMAGE")
-                            txtSelect.Text =
-                                string.Format(
-                                    "Select Cast(Cast({0} As varbinary(max)) As varchar(max)) As {0}\r\nFrom {1}",
-                                    SQLColumn, from);
+                            txtSelect.Text = String.Format("Select Cast(Cast({0} As varbinary(max)) As varchar(max)) As {0}\r\nFrom {1}", SQLColumn, from);
                         else
-                            txtSelect.Text = string.Format("Select {0}\r\nFrom {1}", SQLColumn, from);
+                            txtSelect.Text = String.Format("Select {0}\r\nFrom {1}", SQLColumn, from);
                         txtWhere.Focus();
                     }
                 }
@@ -122,23 +111,22 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Executes the query to test it out
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnTest_Click(object sender, EventArgs e)
-        {
-            var con = new SqlConnection(SQLConnectionString);
+        {            
+            SqlConnection con = new SqlConnection(SQLConnectionString);
             try
             {
-                if (con.State == ConnectionState.Closed) con.Open();
-                var command = new SqlCommand();
-                if (string.IsNullOrEmpty(txtWhere.Text))
-                    command.CommandText = string.Format("{0}", txtSelect.Text);
+                if (con.State == ConnectionState.Closed) con.Open();                
+                SqlCommand command = new SqlCommand();
+                if (String.IsNullOrEmpty(txtWhere.Text))
+                    command.CommandText = String.Format("{0}", txtSelect.Text);
                 else
-                    command.CommandText = string.Format("{0} Where {1}", txtSelect.Text, txtWhere.Text);
+                    command.CommandText = String.Format("{0} Where {1}", txtSelect.Text, txtWhere.Text);
                 command.Connection = con;
                 command.ExecuteNonQuery();
                 if (con.State == ConnectionState.Open) con.Close();
@@ -146,7 +134,7 @@ namespace HL7_Analyst
             }
             catch (SqlException sqlEX)
             {
-                MessageBox.Show(sqlEX.Message);
+                MessageBox.Show(sqlEX.Message);                
             }
             catch (Exception ex)
             {
@@ -157,7 +145,6 @@ namespace HL7_Analyst
                 if (con.State == ConnectionState.Open) con.Close();
             }
         }
-
         /// <summary>
         /// Sets up the database options object and saves it to disk.
         /// </summary>
@@ -167,18 +154,18 @@ namespace HL7_Analyst
         {
             try
             {
-                if (!string.IsNullOrEmpty(txtName.Text))
+                if (!String.IsNullOrEmpty(txtName.Text))
                 {
-                    var dbOptions = new DatabaseOptions();
+                    DatabaseOptions dbOptions = new DatabaseOptions();
                     dbOptions.SQLConnectionString = SQLConnectionString;
                     dbOptions.SQLColumn = SQLColumn;
-                    if (!string.IsNullOrEmpty(txtWhere.Text))
-                        dbOptions.SQLQuery = string.Format("{0} Where {1}", txtSelect.Text, txtWhere.Text);
+                    if (!String.IsNullOrEmpty(txtWhere.Text))
+                        dbOptions.SQLQuery = String.Format("{0} Where {1}", txtSelect.Text, txtWhere.Text);
                     else
-                        dbOptions.SQLQuery = string.Format("{0}", txtSelect.Text);
+                        dbOptions.SQLQuery = String.Format("{0}", txtSelect.Text);
                     DatabaseOptions.Save(txtName.Text, dbOptions);
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
                 }
             }
             catch (Exception ex)
@@ -186,7 +173,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Closes the form.
         /// </summary>
@@ -196,26 +182,25 @@ namespace HL7_Analyst
         {
             try
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Adds the tables from the specified database to the combo box
         /// </summary>
         private void AddTables()
         {
-            var con = new SqlConnection(SQLConnectionString);
+            SqlConnection con = new SqlConnection(SQLConnectionString);
             try
             {
                 if (con.State == ConnectionState.Closed) con.Open();
-                var command = new SqlCommand("Select TABLE_NAME From INFORMATION_SCHEMA.TABLES", con);
-                var reader = command.ExecuteReader();
+                SqlCommand command = new SqlCommand("Select TABLE_NAME From INFORMATION_SCHEMA.TABLES", con);
+                SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                     cbTables.Items.Add(reader["TABLE_NAME"]);
                 if (con.State == ConnectionState.Open) con.Close();
@@ -233,7 +218,6 @@ namespace HL7_Analyst
                 if (con.State == ConnectionState.Open) con.Close();
             }
         }
-
         /// <summary>
         /// Loads the columns from the specified table into the datagrid
         /// </summary>
@@ -241,19 +225,15 @@ namespace HL7_Analyst
         private void AddColumns(string TBLName)
         {
             dgvColumns.Rows.Clear();
-            var con = new SqlConnection(SQLConnectionString);
+            SqlConnection con = new SqlConnection(SQLConnectionString);
             try
             {
                 if (con.State == ConnectionState.Closed) con.Open();
-                var command =
-                    new SqlCommand(
-                        string.Format(
-                            "Select COLUMN_NAME, DATA_TYPE From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = '{0}'",
-                            TBLName), con);
-                var reader = command.ExecuteReader();
+                SqlCommand command = new SqlCommand(String.Format("Select COLUMN_NAME, DATA_TYPE From INFORMATION_SCHEMA.COLUMNS Where TABLE_NAME = '{0}'", TBLName), con);
+                SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    var items = new List<object>();
+                    List<object> items = new List<object>();
                     items.Add(reader["COLUMN_NAME"]);
                     items.Add(reader["DATA_TYPE"]);
                     dgvColumns.Rows.Add(items.ToArray());

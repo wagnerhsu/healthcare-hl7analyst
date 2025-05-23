@@ -13,53 +13,42 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using HL7Lib.Base;
-using Message = HL7Lib.Base.Message;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Search Form: Searches files in specified locations for messages containing the search terms.
     /// </summary>
     public partial class frmSearch : Form
     {
-        private readonly BackgroundWorker bgw = new BackgroundWorker();
-        private List<string> _extensions = new List<string>();
-
         /// <summary>
         /// The Messages being returned after the search
         /// </summary>
         public List<string> Messages = new List<string>();
+        List<string> Extensions = new List<string>();
+        List<string> PreviousSearches = new List<string>();
+        BackgroundWorker bgw = new BackgroundWorker();
 
-        private List<string> _previousSearches = new List<string>();
-
+        private delegate void UpdateCurrentFileDelegate(string item);
+        private delegate void UpdateMatchCountDelegate(string item);
+        private delegate void CloseFormDelegate();
         /// <summary>
         /// Initialization Method
         /// </summary>        
         public frmSearch(string st)
         {
             InitializeComponent();
-            if (!string.IsNullOrEmpty(st))
+            if (!String.IsNullOrEmpty(st))
                 txtSearchTerms.Text = st;
         }
 
-        private delegate void UpdateCurrentFileDelegate(string item);
-
-        private delegate void UpdateMatchCountDelegate(string item);
-
-        private delegate void CloseFormDelegate();
-
         #region Cross Thread Invoke Methods
-
         /// <summary>
         /// Update the current file label
         /// </summary>
@@ -76,7 +65,7 @@ namespace HL7_Analyst
                     }
                     else
                     {
-                        var fi = new FileInfo(v);
+                        FileInfo fi = new FileInfo(v);
                         lblCurrentFile.Text = fi.Name;
                     }
                 }
@@ -86,7 +75,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Updates the match count label
         /// </summary>
@@ -108,7 +96,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Closes the form
         /// </summary>
@@ -116,12 +103,12 @@ namespace HL7_Analyst
         {
             try
             {
-                if (IsHandleCreated)
+                if (this.IsHandleCreated)
                 {
-                    if (InvokeRequired)
-                        Invoke(new CloseFormDelegate(CloseForm));
+                    if (this.InvokeRequired)
+                        this.Invoke(new CloseFormDelegate(CloseForm));
                     else
-                        Close();
+                        this.Close();
                 }
             }
             catch (ObjectDisposedException)
@@ -133,11 +120,9 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         #endregion
 
         #region Event Handlers
-
         /// <summary>
         /// Form Load Event: Loads settings and sets up Background Worker.
         /// </summary>
@@ -147,50 +132,47 @@ namespace HL7_Analyst
         {
             try
             {
-                var s = new Settings();
+                Settings s = new Settings();
                 s.GetSettings();
                 txtSearchPath.Text = s.SearchPath;
-                txtSearchPath.Text = HL7Analyst.Properties.Settings.Default.SearchPath;
+                Extensions = s.Extensions;
 
-                _extensions = s.Extensions;
-
-                _previousSearches = SearchTerm.PullPreviousQueries();
-                txtSearchTerms.AutoCompleteCustomSource.AddRange(_previousSearches.ToArray());
+                PreviousSearches = SearchTerm.PullPreviousQueries();
+                txtSearchTerms.AutoCompleteCustomSource.AddRange(PreviousSearches.ToArray());
 
                 bgw.WorkerSupportsCancellation = true;
                 bgw.WorkerReportsProgress = true;
-                bgw.DoWork += bgw_DoWork;
+                bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Background Worker Do Work Event: Performs search
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void bgw_DoWork(object sender, DoWorkEventArgs e)
+        void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-                var root = txtSearchPath.Text;
-                var matchCount = 0;
-                foreach (var ext in _extensions)
+                string root = txtSearchPath.Text;
+                int matchCount = 0;
+                foreach (string ext in Extensions)
                 {
                     if (!e.Cancel)
                     {
-                        foreach (var file in Directory.GetFiles(root, "*." + ext, SearchOption.TopDirectoryOnly))
+                        foreach (string file in Directory.GetFiles(root, "*." + ext, SearchOption.TopDirectoryOnly))
                         {
                             UpdateCurrentFile(file);
                             if (!e.Cancel)
                             {
-                                var m = SearchFile(file);
+                                List<string> m = SearchFile(file);
                                 if (m.Count > 0)
                                 {
-                                    foreach (var msg in m)
+                                    foreach (string msg in m)
                                     {
                                         if (!e.Cancel)
                                         {
@@ -210,18 +192,15 @@ namespace HL7_Analyst
                         {
                             if (!e.Cancel)
                             {
-                                foreach (
-                                    var f in
-                                        Directory.GetFiles(Path.Combine(root, d), "*." + ext,
-                                            SearchOption.TopDirectoryOnly))
+                                foreach (string f in Directory.GetFiles(Path.Combine(root, d), "*." + ext, SearchOption.TopDirectoryOnly))
                                 {
                                     UpdateCurrentFile(f);
                                     if (!e.Cancel)
                                     {
-                                        var m = SearchFile(f);
+                                        List<string> m = SearchFile(f);
                                         if (m.Count > 0)
                                         {
-                                            foreach (var msg in m)
+                                            foreach (string msg in m)
                                             {
                                                 if (!e.Cancel)
                                                 {
@@ -249,7 +228,7 @@ namespace HL7_Analyst
                         break;
                     }
                 }
-                DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
                 CloseForm();
             }
             catch (Exception ex)
@@ -257,7 +236,6 @@ namespace HL7_Analyst
                 Log.LogException(ex);
             }
         }
-
         /// <summary>
         /// Populates the sub-folders selection box if the entered path exists.
         /// </summary>
@@ -270,8 +248,8 @@ namespace HL7_Analyst
                 clbSubFolders.Items.Clear();
                 if (Directory.Exists(txtSearchPath.Text))
                 {
-                    var di = new DirectoryInfo(txtSearchPath.Text);
-                    foreach (var d in di.GetDirectories())
+                    DirectoryInfo di = new DirectoryInfo(txtSearchPath.Text);
+                    foreach (DirectoryInfo d in di.GetDirectories())
                     {
                         clbSubFolders.Items.Add(d.Name);
                     }
@@ -282,7 +260,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Cancels the background workers operations and closes the form.
         /// </summary>
@@ -293,15 +270,14 @@ namespace HL7_Analyst
             try
             {
                 if (bgw.IsBusy) bgw.CancelAsync();
-                DialogResult = DialogResult.Cancel;
-                Close();
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
             }
             catch (Exception ex)
             {
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         /// <summary>
         /// Starts the search using the background worker thread
         /// </summary>
@@ -317,7 +293,6 @@ namespace HL7_Analyst
             btnSearchPath.Enabled = false;
             StartSearch();
         }
-
         /// <summary>
         /// Opens the Build Search Query form.
         /// </summary>
@@ -327,8 +302,8 @@ namespace HL7_Analyst
         {
             try
             {
-                var fbs = new frmBuildSearch(txtSearchTerms.Text);
-                var dr = fbs.ShowDialog();
+                frmBuildSearch fbs = new frmBuildSearch(txtSearchTerms.Text);
+                DialogResult dr = fbs.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
@@ -340,12 +315,11 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
         private void btnSearchPath_Click(object sender, EventArgs e)
         {
             try
             {
-                var dr = fbSearchPath.ShowDialog();
+                DialogResult dr = fbSearchPath.ShowDialog();
 
                 if (dr == DialogResult.OK)
                 {
@@ -373,29 +347,25 @@ namespace HL7_Analyst
 
         private void frmSearch_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SearchTerm.SavePreviousQueries(_previousSearches);
-            HL7Analyst.Properties.Settings.Default.SearchPath = txtSearchPath.Text;
-            HL7Analyst.Properties.Settings.Default.Save();
+            SearchTerm.SavePreviousQueries(PreviousSearches);
         }
 
         private void cbSearchAll_CheckedChanged(object sender, EventArgs e)
         {
             if (cbSearchAll.Checked)
             {
-                for (var i = 0; i < clbSubFolders.Items.Count; i++)
+                for (int i = 0; i < clbSubFolders.Items.Count; i++)
                     clbSubFolders.SetItemChecked(i, true);
             }
             else
             {
-                for (var i = 0; i < clbSubFolders.Items.Count; i++)
+                for (int i = 0; i < clbSubFolders.Items.Count; i++)
                     clbSubFolders.SetItemChecked(i, false);
             }
         }
-
         #endregion
 
         #region Private Methods
-
         /// <summary>
         /// Searches the specified file
         /// </summary>
@@ -405,18 +375,18 @@ namespace HL7_Analyst
         {
             try
             {
-                var msgList = new List<string>();
-                var fi = new FileInfo(f);
-                var sr = new StreamReader(fi.FullName);
-                var contents = sr.ReadToEnd();
+                List<string> msgList = new List<string>();
+                FileInfo fi = new FileInfo(f);
+                StreamReader sr = new StreamReader(fi.FullName);
+                string contents = sr.ReadToEnd();
                 sr.Close();
 
-                var msgs = contents.Split(new[] {"MSH|"}, StringSplitOptions.RemoveEmptyEntries);
+                string[] msgs = contents.Split(new string[] { "MSH|" }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var msg in msgs)
+                foreach (string msg in msgs)
                 {
-                    var m = "MSH|" + msg;
-                    var message = new Message(m);
+                    string m = "MSH|" + msg;
+                    HL7Lib.Base.Message message = new HL7Lib.Base.Message(m);
                     if (SearchMessage(message))
                     {
                         msgList.Add(message.DisplayString);
@@ -430,27 +400,25 @@ namespace HL7_Analyst
                 return new List<string>();
             }
         }
-
         /// <summary>
         /// Searches the message using the search query.
         /// </summary>
         /// <param name="m">The message to search</param>
         /// <returns>Returns true if the message matches the search query</returns>
-        private bool SearchMessage(Message m)
+        private bool SearchMessage(HL7Lib.Base.Message m)
         {
             try
             {
-                var returnValue = false;
+                bool returnValue = false;
 
-                foreach (var item in txtSearchTerms.Text.Split('|'))
+                foreach (string item in txtSearchTerms.Text.Split('|'))
                 {
-                    var allMatched = false;
-                    var searchTerms =
-                        SearchTerm.GetSearchTerms(item.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries));
-                    foreach (var st in searchTerms)
+                    bool allMatched = false;
+                    List<SearchTerm> searchTerms = SearchTerm.GetSearchTerms(item.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+                    foreach (SearchTerm st in searchTerms)
                     {
-                        var c = m.GetByID(st.ID, st.Value.ToUpper());
-                        if (!string.IsNullOrEmpty(c.ID))
+                        HL7Lib.Base.Component c = m.GetByID(st.ID, st.Value.ToUpper());
+                        if (!String.IsNullOrEmpty(c.ID))
                         {
                             allMatched = true;
                         }
@@ -479,13 +447,13 @@ namespace HL7_Analyst
         {
             try
             {
-                if (!string.IsNullOrEmpty(txtSearchPath.Text) && !string.IsNullOrEmpty(txtSearchTerms.Text))
+                if (!String.IsNullOrEmpty(txtSearchPath.Text) && !String.IsNullOrEmpty(txtSearchTerms.Text))
                 {
-                    if (!_previousSearches.Contains(txtSearchTerms.Text))
+                    if (!PreviousSearches.Contains(txtSearchTerms.Text))
                     {
-                        _previousSearches.Add(txtSearchTerms.Text);
+                        PreviousSearches.Add(txtSearchTerms.Text);
                     }
-                    Cursor = Cursors.WaitCursor;
+                    this.Cursor = Cursors.WaitCursor;
                     btnSearch.Enabled = false;
                     bgw.RunWorkerAsync();
                 }
@@ -495,7 +463,6 @@ namespace HL7_Analyst
                 Log.LogException(ex).ShowDialog();
             }
         }
-
-        #endregion
+        #endregion        
     }
 }

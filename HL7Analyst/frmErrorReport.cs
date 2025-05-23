@@ -13,15 +13,11 @@
 * GNU General Public License for more details.
 ****************************************************************/
 
-#region
-
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-#endregion
-
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// Error Report Form: Displays the error that was passed to it and allows user to send error report to hl7analyst@gmail.com
@@ -38,7 +34,6 @@ namespace HL7_Analyst
             txtErrorMessage.Text = err.Message;
             txtStackTrace.Text = err.StackTrace;
         }
-
         /// <summary>
         /// Send Button Click Event: Opens users default mail application and sets a message to to errors values.
         /// </summary>
@@ -48,16 +43,14 @@ namespace HL7_Analyst
         {
             try
             {
-                Process.Start(string.Format("mailto:hl7analyst@gmail.com?subject=An Error Has Occurred&body={0}%0A{1}",
-                    txtErrorMessage.Text, txtStackTrace.Text));
-                Close();
+                Process.Start(String.Format("mailto:hl7analyst@gmail.com?subject=An Error Has Occurred&body={0}%0A{1}", txtErrorMessage.Text, txtStackTrace.Text));
+                this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-
         /// <summary>
         /// Cancel Button Click Event: Closes Form.
         /// </summary>
@@ -65,7 +58,7 @@ namespace HL7_Analyst
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

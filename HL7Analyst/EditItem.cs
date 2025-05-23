@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HL7_Analyst
+namespace HL7Analyst
 {
     /// <summary>
     /// EditItem Class: Used to store a new EditItem for use in message editing.
